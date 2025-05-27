@@ -2,23 +2,19 @@
     $Model = 'App\\Models\\' . Str::studly(Str::singular($table));
     $label = $Model::Labelling();
 
-    $data = $Model::orderBy($sortBy)->get()->toArray();
+    $data = $Model::orderBy($sortBy)->paginate(10);
     $field  = (new $Model)->getFillable();
 @endphp
-<div class="container mx-auto">
-
-    {{-- JUDUL TABEL DISINI --}}
-    <h1 class="text-2xl font-semibold mb-4">{{ $head }}</h1>
-
+<div class="container mx-auto mb-40">
     <div class="overflow-x-auto bg-white rounded-lg shadow">
+      <h1 class="text-2xl font-semibold mb-4 my-3 mx-3">{{ $head }}</h1>
       <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
-            <tr>
+                <tr>
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
-
                     {{-- NAMA NAMA KOLOM DINAMIS --}}
                     @foreach ($label as $l)
-                        <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase">{{ $l }}</th>
+                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase">{{ $l }}</th>
                     @endforeach
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
@@ -28,19 +24,22 @@
                 @if ($data)
                     @foreach ($data as $d )
                         <tr>
-                            <td class="px-4 py-3">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-3 fw-bold">{{ $loop->iteration }}</td>
 
                             {{-- LOOPING KOLOM --}}
                             @foreach ($field as $f)
                                 @if ($f == 'photo')
                                     <td class="px-4 py-3">
                                         <span class="inline-block rounded-full overflow-hidden w-16 h-16">
-                                            <img src="{{ asset('storage/' . $d[$f]) }}" class="w-full h-full object-cover" />
+                                            <img
+                                                src="{{ $d->$f ? asset('storage/' . $d->$f) : 'https://placehold.co/64x64/png' }}"
+                                                class="w-full h-full object-cover"
+                                            />
                                         </span>
                                     </td>
                                 @else
                                     <td class="px-4 py-3">
-                                        {{ $d[$f] }}
+                                        {{ $d->$f }}
                                     </td>
                                 @endif
                             @endforeach
@@ -68,5 +67,8 @@
                 @endif
             </tbody>
         </table>
+        <div class="px-4 py-3 bg-white border-t text-center">
+            {{ $data->links() }}
+        </div>
     </div>
 </div>

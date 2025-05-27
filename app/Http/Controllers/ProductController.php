@@ -46,7 +46,10 @@ class ProductController extends Controller
         $table = 'products';
         $config = CrudHelper::table($table);
         $result = CrudHelper::masterInsertData($table, $config, $input);
-        return redirect('/produk');
+        if (isset($result['error'])) {
+            return redirect('/produk/tambah')->withErrors($result['error']);
+        }
+        return redirect('/produk')->with('success', 'Berhasil Menyimpan Data');
     }
 
     /**
@@ -81,7 +84,11 @@ class ProductController extends Controller
         $table = 'Products';
         $data = CrudHelper::table($table); // Mengambil fillable, Rules, Messages
         $result = CrudHelper::masterUpdateData($table, $data, $input, $id);
-        return redirect('/produk');
+        if (isset($result['error'])) {
+            return back()->withErrors($result['error']);
+        }
+        return  redirect('/produk')->with('success', 'Berhasil Mengubah Data');
+
     }
 
     /**
@@ -91,6 +98,7 @@ class ProductController extends Controller
     {
         $table = 'Products';
         $result = CrudHelper::masterDeleteData($table, $id);
-        return redirect('/produk');
+        return  redirect('/produk')->with('success', 'Berhasil Menghapus Data');
+
     }
 }

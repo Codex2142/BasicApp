@@ -3,7 +3,23 @@
 @section('title', 'Produk - Tambah')
 
 @section('content')
-    <div class="container mt-4">
+<div class="container mt-4">
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            @include('components.feedback',[
+                'type' =>'error',
+                'message' => $error,
+            ])
+        @endforeach
+    @endif
+
+    <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
+        <div class="btn btn-success rounded-lg my-3 mx-3">
+            <a href="/produk">Kembali</a>
+        </div>
+        <span class="md:mx-40 mr-10 fw-bold"> Tambah Produk</span>
+    </div>
+
     <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 

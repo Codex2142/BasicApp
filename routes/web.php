@@ -14,5 +14,5 @@ Route::get('/produk/update/{id}', [ProductController::class, 'edit'])->name('pro
 
 Route::post('/produk/update/{id}', [ProductController::class, 'update'])->name('product.update');
 
-Route::get('/produk/hapus/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
+Route::get('/produk/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 

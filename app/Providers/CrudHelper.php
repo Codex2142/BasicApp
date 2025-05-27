@@ -37,9 +37,11 @@ class CrudHelper extends ServiceProvider
         $validatedData = dataValidator::masterValidator($insert, $rules, $messages);
         if ($validatedData === true) {
             DB::table($table)->insert($insert);
-            return "Data Berhasil Disimpan!";
+            $success = ['success' => 'Berhasil Menyimpan Data'];
+            return $success;
         } else {
-            return $validatedData;
+            $error =  ['error' => $validatedData];
+            return $error ;
         }
     }
 
@@ -55,9 +57,11 @@ class CrudHelper extends ServiceProvider
 
         if ($validatedData === true) {
             DB::table($table)->where('id', $id)->update($insert);
-            return "Data Berhasil Diperbarui";
+            $success = ['success' => 'Berhasil Mengubah Data'];
+            return $success;
         } else {
-            return $validatedData;
+            $error =  ['error' => $validatedData];
+            return $error ;
         }
     }
 
@@ -65,32 +69,20 @@ class CrudHelper extends ServiceProvider
         try {
             $delete = DB::table($table)->where('id', $id)->delete();
             if ($delete) {
-                return "Data berhasil dihapus!";
+                $success = ['success' => 'Berhasil Menghapus Data'];
+                return $success;
             } else {
-                return "Data tidak ditemukan!";
+                $error = ['error' => 'Data Tidak Ditemukan'];
+                return $error;
             }
 
         } catch (\Exception $e) {
-            return "Terjadi kesalahan saat menghapus data: " . $e->getMessage();
+            $error = ['error' => 'Terjadi Kesalahan Saat Menghapus'];
+            return $error;
         }
     }
 
-
-
-    // Menyusun Data yang akan diproses
-    public static function dataConstruct($fill, $value)
-    {
-        $data = [];
-        foreach ($fill as $index => $col) {
-            $data[$col] = $value[$index] ?? null;
-        }
-
-        return $data;
-    }
-
-
-
-    // // Menyusun Rule yang akan digunakan
+    // Menyusun Rule yang akan digunakan
     public static function ruleConstruct($fill, $rule, $messages)
     {
         $rules = [];
