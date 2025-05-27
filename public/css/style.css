@@ -1,0 +1,19 @@
+body {
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Sticky Navbar */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1030; /* di atas sidebar */
+}
+
+/* Sticky Sidebar */
+.sidebar {
+    position: sticky;
+    top: 67px;
+    height: calc(100vh - 56px); /* sisa tinggi viewport */
+    overflow-y: auto;
+}
