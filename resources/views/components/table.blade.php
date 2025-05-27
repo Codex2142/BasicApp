@@ -67,7 +67,7 @@
                 @endif
             </tbody>
         </table>
-        <div class="px-4 py-3 bg-white border-t text-center">
+        <div class="px-4 py-3 bg-gray-100 border-t text-center">
             {{ $data->links() }}
         </div>
     </div>

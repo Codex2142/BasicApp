@@ -62,3 +62,10 @@ body {
     color: #0a58ca;
 }
 
+@media (max-width: 768px) {
+    .mobile-sidebar {
+        z-index: 1050;
+    }
+}
+
+

@@ -20,7 +20,7 @@ class ProductController extends Controller
         $table = 'Products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
-        return view('pages.poduct.view', compact('result'));
+        return view('pages.product.view', compact('result'));
     }
 
     /**
@@ -28,7 +28,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('pages.poduct.add');
+        return view('pages.product.add');
     }
 
     /**
@@ -67,7 +67,7 @@ class ProductController extends Controller
     {
         $table = 'products';
         $data = DB::table($table)->where('id', $id)->get()->toArray();
-        return view('pages.poduct.edit', compact('data'));
+        return view('pages.product.edit', compact('data'));
     }
 
     /**

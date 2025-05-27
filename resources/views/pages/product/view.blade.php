@@ -39,7 +39,7 @@
     ])
 </div>
 <div class="btn btn-success button-fixed-corner">
-    <a href="/produk/tambah">+</a>
+    <a href="/produk/tambah"><i class="bi bi-plus"></i></a>
 </div>
 @endsection
 
