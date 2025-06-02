@@ -5,49 +5,57 @@
 <!-- Text -->
 @if ($type == 'text')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="text" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="text" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}"
+        value="{{ $value }}" class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Password -->
 @if ($type == 'password')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="password" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="password" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}"
+        value="{{ $value }}" class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Email -->
 @if ($type == 'email')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="email" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="email" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}"
+        value="{{ $value }}" class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Number -->
 @if ($type == 'number')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="number" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="number" id="{{ $name }}" name="{{ $name }}" placeholder="{{ $place }}"
+        value="{{ $value }}" class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Date -->
 @if ($type == 'date')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="date" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="date" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}"
+        class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Time -->
 @if ($type == 'time')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="time" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="time" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}"
+        class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Month -->
 @if ($type == 'month')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="month" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="month" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}"
+        class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Week -->
 @if ($type == 'week')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="week" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}" class="form-control border rounded p-2 w-full" />
+    <input type="week" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}"
+        class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Radio -->
@@ -56,10 +64,11 @@
     @foreach ($data as $key => $text)
         @php
             $id = $name . '_' . $key;
-            $checked = ($key == $value) ? 'checked' : '';
+            $checked = $key == $value ? 'checked' : '';
         @endphp
         <div>
-            <input type="radio" id="{{ $id }}" name="{{ $name }}" value="{{ $key }}" class="form-check-input" {{ $checked }}>
+            <input type="radio" id="{{ $id }}" name="{{ $name }}" value="{{ $key }}"
+                class="form-check-input" {{ $checked }}>
             <label for="{{ $id }}" class="ms-1">{{ $text }}</label>
         </div>
     @endforeach
@@ -73,14 +82,9 @@
     @endphp
     @foreach ($data as $val => $text)
         <div>
-            <input
-                type="checkbox"
-                id="{{ $name . '_' . $val }}"
-                name="{{ $name }}[]"
-                value="{{ $val }}"
-                class="form-check-input"
-                {{ in_array($val, $valueSelected) ? 'checked' : '' }}
-            >
+            <input type="checkbox" id="{{ $name . '_' . $val }}" name="{{ $name }}[]"
+                value="{{ $val }}" class="form-check-input"
+                {{ in_array($val, $valueSelected) ? 'checked' : '' }}>
             <label for="{{ $name . '_' . $val }}" class="ms-1">{{ $text }}</label>
         </div>
     @endforeach
@@ -89,13 +93,15 @@
 <!-- File -->
 @if ($type == 'file')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <input type="file" id="{{ $name }}" name="{{ $name }}" class="form-control form-control-sm border rounded p-1 w-full" />
+    <input type="file" id="{{ $name }}" name="{{ $name }}"
+        class="form-control form-control-sm border rounded p-1 w-full" />
 @endif
 
 <!-- Textarea -->
 @if ($type == 'textarea')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
-    <textarea id="{{ $name }}" name="{{ $name }}" rows="3" class="form-control border rounded p-2 w-full" placeholder="{{ $place }}">{{ $value }}</textarea>
+    <textarea id="{{ $name }}" name="{{ $name }}" rows="3"
+        class="form-control border rounded p-2 w-full" placeholder="{{ $place }}">{{ $value }}</textarea>
 @endif
 
 <!-- Select -->

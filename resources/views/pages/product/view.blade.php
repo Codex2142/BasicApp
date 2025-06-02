@@ -4,6 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
+
     @if (session('success'))
         @include('components.feedback', [
             'type' => 'success',
@@ -20,17 +21,28 @@
         @endforeach
     @endif
 
-    <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-        <div class="btn btn-success rounded-lg my-3 mx-3">
-            <a href="/produk/tambah">Tambah</a>
-        </div>
-        <div class="input-group">
-            <input id="searchInput" type="text" class="form-control" placeholder="Cari" aria-label="Recipient's username" aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+    <div class="bg-white rounded-lg shadow my-4 mx-2 p-4">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+
+            <!-- Kiri: Tombol Tambah + Pencarian -->
+            <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
+
+                <!-- Tombol Tambah -->
+                <a href="/produk/tambah" class="btn btn-success rounded-lg">
+                    Tambah
+                </a>
+
+                <!-- Input Cari -->
+                <div class="input-group">
+                    <input id="searchInput" type="text" class="form-control" placeholder="Cari" aria-label="Pencarian">
+                    <div class="input-group-append">
+                        <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
+
     {{-- TABLE GENERATOR --}}
     @include('components.table', [
         'head' => 'Semua Produk',   {{-- JUDUL TABEL --}}
@@ -66,4 +78,3 @@
         });
     });
 </script>
-

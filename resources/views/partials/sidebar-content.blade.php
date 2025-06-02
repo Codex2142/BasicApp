@@ -3,7 +3,7 @@
 <ul class="nav flex-column gap-3">
     <li class="nav-item">
         <a class="nav-link {{ request()->is('Beranda') ? 'navbar-active' : '' }}" href="/Beranda">
-            <i class="bi bi-house-door-fill"></i> Dashboard
+            <i class="bi bi-house-door-fill"></i> Beranda
         </a>
     </li>
     <li class="nav-item">
