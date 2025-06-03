@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" x-data="{ sidebarOpen: false }" class="h-100">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,18 +16,21 @@
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.png" type="image/png">
 </head>
+
 <body class="h-100 bg-gray-100">
 
     <!-- Navbar -->
     @include('partials.navbar')
 
-    <div class="container-fluid h-100 mt-12">
+    <div class="container-fluid h-100">
         <div class="row h-100">
             <!-- Sidebar -->
-            @include('partials.sidebar')
+            <div class="mt-5">
+                @include('partials.sidebar')
+            </div>
 
             <!-- Main Content -->
-            <main class="col-md-10 ms-auto px-4 py-4 overflow-auto">
+            <main class="col-md-10 ms-auto px-4 py-4 overflow-auto -mt-5">
                 @yield('content')
             </main>
         </div>
@@ -36,4 +40,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </body>
+
 </html>
+
+@stack('scripts')

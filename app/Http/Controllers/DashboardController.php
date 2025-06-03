@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
+use Illuminate\Support\Str;
+use App\Providers\WebHelper;
 use Illuminate\Http\Request;
+use App\Providers\CrudHelper;
+use Illuminate\Support\Carbon;
 
 class DashboardController extends Controller
 {
@@ -11,7 +16,26 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        return view('dashboard.index');
+        $now = Carbon::now();
+
+        $table = 'Products';
+        $data = CrudHelper::table($table);
+        $product = CrudHelper::masterShowData($table, $data);
+
+        $transaction = Transaction::get()->toArray();
+        $month = Str::upper(WebHelper::getCurrentMonth());
+
+
+        $total = Transaction::whereMonth('tanggal', $now->month)
+                    ->whereYear('tanggal', $now->year)->where('status', 'done')
+                    ->sum('total');
+
+        return view('dashboard.index', compact(
+            'product',
+            'transaction',
+            'month',
+            'total',
+        ));
     }
 
     /**
@@ -19,7 +43,7 @@ class DashboardController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
