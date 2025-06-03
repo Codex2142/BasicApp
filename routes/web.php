@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProductController;
-use App\Http\Controllers\TransactionController;
+use App\Providers\CrudHelper;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\TransactionController;
 
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard.index');
 Route::get('/Beranda', [DashboardController::class, 'index'])->name('dashboard.index');
-
 
 Route::get('/produk', [ProductController::class, 'index'])->name('product.index');
 
@@ -19,8 +19,6 @@ Route::post('/produk/update/{id}', [ProductController::class, 'update'])->name('
 
 Route::delete('/produk/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
-
-
 Route::get('/transaksi', [TransactionController::class, 'index'])->name('transaction.index');
 
 Route::get('/transaksi/tambah', [TransactionController::class, 'create'])->name('transaction.create');
@@ -30,3 +28,10 @@ Route::get('/transaksi/update/{id}', [TransactionController::class, 'edit'])->na
 route::put('/transaksi/update/{id}', [TransactionController::class, 'update'])->name('transaction.update');
 
 Route::get('/transaksi/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
+
+Route::get('kalkulator', function () {
+    $table = 'Products';
+    $data = CrudHelper::table($table);
+    $result = CrudHelper::masterShowData($table, $data);
+    return view('pages.calculator.index', compact('result'));
+});
