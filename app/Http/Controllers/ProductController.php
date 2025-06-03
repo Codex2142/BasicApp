@@ -36,11 +36,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        $input = Arr::except($request->all(), ['_token', 'photo']);
+        $input = Arr::except($request->all(), ['_token', 'photo', 'photo_']);
 
-        if ($request->hasFile('photo')) {
+        if ($request->hasFile('photo_')) {
             // Simpan file dan ambil path relatifnya
-            $input['photo'] = $request->file('photo')->store('images', 'public');
+            $input['photo'] = $request->file('photo_')->store('images', 'public');
         }
 
         $table = 'products';
@@ -75,10 +75,10 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $input = Arr::except($request->all(), ['_token', 'photo']);
+        $input = Arr::except($request->all(), ['_token', 'photo', 'photo_']);
 
-        if ($request->hasFile('photo')) {
-            $input['photo'] = $request->file('photo')->store('images', 'public');
+        if ($request->hasFile('photo_')) {
+            $input['photo'] = $request->file('photo_')->store('images', 'public');
         }
 
         $table = 'Products';
