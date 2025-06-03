@@ -53,8 +53,9 @@
 <div class="btn btn-success button-fixed-corner">
     <a href="/produk/tambah"><i class="bi bi-plus"></i></a>
 </div>
+@include('components.modal-delete')
 @endsection
-
+@push('scripts')
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         const searchInput = document.getElementById('searchInput');
@@ -77,4 +78,42 @@
             rows.forEach(row => row.style.display = "");
         });
     });
+
+    let selectedDeleteUrl = '';
+
+    // Untuk table delete
+    document.querySelectorAll('.btn-table-delete').forEach(button => {
+        button.addEventListener('click', function () {
+            const id = this.getAttribute('data-id');
+            selectedDeleteUrl = `/produk/${id}`; // atau gunakan route jika perlu
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+        });
+    });
+
+    // Saat tombol konfirmasi "Ya, Hapus" ditekan
+    document.getElementById('confirmSaveBtn').addEventListener('click', function () {
+        if (selectedDeleteUrl) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = selectedDeleteUrl;
+
+            const csrf = document.createElement('input');
+            csrf.type = 'hidden';
+            csrf.name = '_token';
+            csrf.value = '{{ csrf_token() }}';
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'DELETE';
+
+            form.appendChild(csrf);
+            form.appendChild(method);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 </script>
+@endpush
+

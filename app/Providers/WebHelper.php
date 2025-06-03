@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Carbon\Carbon;
+\Carbon\Carbon::setLocale('id');
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 
@@ -38,4 +40,17 @@ class WebHelper extends ServiceProvider
         return $word;
     }
 
+    public static function dateIndonesia($date)
+    {
+        Carbon::setLocale('id');
+        $data = Carbon::parse($date)->translatedFormat('d M Y');
+        return $data;
+    }
+
+    public static function getCurrentMonth()
+    {
+        Carbon::setLocale('id');
+        $data = Carbon::now()->translatedFormat('F');
+        return $data;
+    }
 }
