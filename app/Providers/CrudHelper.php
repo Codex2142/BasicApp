@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Str;
 use App\Rules\dataValidator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
 
 class CrudHelper extends ServiceProvider
@@ -35,6 +36,10 @@ class CrudHelper extends ServiceProvider
         $messages = $rulesAndMessages['messages'];
 
         $validatedData = dataValidator::masterValidator($insert, $rules, $messages);
+
+        if(isset($insert['password'])) {
+            $insert['password'] = Hash::make($insert['password']);
+        }
         if ($validatedData === true) {
             DB::table($table)->insert($insert);
             $success = ['success' => 'Berhasil Menyimpan Data'];
