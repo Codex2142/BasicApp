@@ -32,6 +32,7 @@
                         'name' => 'name',
                         'place' => 'Masukkan Nama',
                         'value' => '',
+                        'addon' => 'autocomplete="off"',
                     ])
                 </div>
             </div>

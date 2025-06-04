@@ -52,6 +52,9 @@
         'table' => 'Transactions',      {{-- TABEL DATABASE --}}
         'sortBy' => 'tanggal',         {{-- PENGURUTAN --}}
     ])
+    <div class="btn btn-success button-fixed-corner">
+        <a href="/transaksi/tambah"><i class="bi bi-plus"></i></a>
+    </div>
     @include('components.modal-delete')
 @endsection
 

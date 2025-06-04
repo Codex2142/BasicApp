@@ -5,7 +5,6 @@
     $field  = (new $Model)->getFillable();
     $routes = \App\Providers\WebHelper::removeWord($table);
     $data = $Model::orderBy($sortBy)->paginate(10);
-    // dd($data);
 @endphp
 <div class="container mx-auto mb-40" id="tableGenerator">
     <div class="overflow-x-auto bg-white rounded-lg shadow">
@@ -16,7 +15,11 @@
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">No</th>
                     {{-- NAMA NAMA KOLOM DINAMIS --}}
                     @foreach ($label as $l)
-                        <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase">{{ $l }}</th>
+                        @if ($l == 'Password')
+                            <th class="d-none"></th>
+                        @else
+                            <th class="px-4 py-3 text-start text-xs font-medium text-gray-500 uppercase">{{ $l }}</th>
+                        @endif
                     @endforeach
                     <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase">Aksi</th>
                 </tr>
@@ -38,6 +41,9 @@
                                                 class="w-full h-full object-cover"
                                             />
                                         </span>
+                                    </td>
+                                @elseif ($f == 'password')
+                                    <td class="d-none">
                                     </td>
                                 @else
                                     <td class="px-4 py-3">

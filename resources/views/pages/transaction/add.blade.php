@@ -116,6 +116,7 @@
                                 'name' => 'description',
                                 'place' => 'Masukkan Deskripsi',
                                 'value' => '',
+                                'addon' => 'autocomplete="off"',
                             ])
                         </div>
 

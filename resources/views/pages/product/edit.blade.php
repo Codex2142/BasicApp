@@ -63,6 +63,7 @@
                         'name' => 'name',
                         'place' => 'Masukkan Nama',
                         'value' => old('name', $data[0]->name ?? ''),
+                        'addon' => 'autocomplete="off"',
                     ])
                 </div>
             </div>
@@ -76,6 +77,7 @@
                         'name' => 'price1',
                         'place' => 'masukkan Harga',
                         'value' => old('price1', $data[0]->price1 ?? ''),
+                        'addon' => 'autocomplete="off"',
                     ])
                 </div>
             </div>
@@ -89,6 +91,7 @@
                         'name' => 'price2',
                         'place' => 'masukkan Harga',
                         'value' => old('price2', $data[0]->price2 ?? ''),
+                        'addon' => 'autocomplete="off"',
                     ])
                 </div>
             </div>
@@ -102,6 +105,7 @@
                         'name' => 'description',
                         'place' => '',
                         'value' => old('description', $data[0]->description ?? ''),
+                        'addon' => 'autocomplete="off"',
                     ])
                 </div>
             </div>
