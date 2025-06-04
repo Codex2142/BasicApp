@@ -137,3 +137,13 @@ body {
     font-size: 100px !important;
     color:#AF3E3E !important;
 }
+
+#passwordForm {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease;
+}
+
+#passwordForm.show {
+    max-height: 200px;
+}
