@@ -24,6 +24,7 @@ class User extends Authenticatable
         'lastname',
         'username',
         'password',
+        'role',
     ];
 
     public static function Labelling()
@@ -33,6 +34,7 @@ class User extends Authenticatable
             'lastname' => 'Nama Akhir',
             'username' => 'Username',
             'password' => 'Password',
+            'role' => 'Pengguna'
         ];
     }
 

@@ -9,6 +9,8 @@ use App\Providers\WebHelper;
 use Illuminate\Http\Request;
 use App\Providers\CrudHelper;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use ArielMejiaDev\LarapexCharts\Facades\LarapexChart;
 
 class DashboardController extends Controller
@@ -49,7 +51,16 @@ class DashboardController extends Controller
             ->setXAxis($labels)
             ->setHeight(400);
 
-        return view('dashboard.index', compact('product', 'transaction', 'month', 'monthInd', 'total', 'chart', 'year', 'now'));
+        return view('dashboard.index', compact(
+            'product',
+            'transaction',
+            'month',
+            'monthInd',
+            'total',
+            'chart',
+            'year',
+            'now',
+            ));
     }
 
 
@@ -69,9 +80,13 @@ class DashboardController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+        $table = 'users';
+        $id = Auth::id();
+        $data = DB::table($table)->where('id', $id)->get()->toArray();
+        dd($data);
+        return view('dashboard.settings', compact('result'));
     }
 
     /**
