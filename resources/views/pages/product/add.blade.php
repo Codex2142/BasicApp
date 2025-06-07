@@ -20,82 +20,92 @@
             <span class="md:mx-40 mr-10 fw-bold"> Tambah Produk</span>
         </div>
 
-        <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
-            @csrf
+        <div class="container shadow p-3 bg-white mb-3 rounded-lg">
+            <form action="{{ route('product.store') }}" method="POST" enctype="multipart/form-data">
+                @csrf
 
-            <!-- Nama Produk -->
-            <div class="mb-3">
-                <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'text',
-                        'label' => 'Nama',
-                        'name' => 'name',
-                        'place' => 'Masukkan Nama',
-                        'value' => '',
-                        'addon' => 'autocomplete="off"',
-                    ])
-                </div>
-            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <!-- Nama Produk -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'text',
+                                    'label' => 'Nama',
+                                    'name' => 'name',
+                                    'place' => 'Masukkan Nama',
+                                    'value' => '',
+                                    'addon' => 'autocomplete="off"',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'file',
+                                    'label' => 'Masukkan Gambar',
+                                    'name' => 'photo',
+                                    'place' => '',
+                                ])
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- Harga Beli -->
-            <div class="mb-3">
-                <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'number',
-                        'label' => 'Harga Beli',
-                        'name' => 'price1',
-                        'place' => 'masukkan Harga',
-                        'value' => '',
-                    ])
+                    <div class="col-md-6">
+                        <!-- Harga Beli -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'number',
+                                    'label' => 'Harga Beli',
+                                    'name' => 'price1',
+                                    'place' => 'masukkan Harga',
+                                    'value' => '',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <!-- Harga Beli -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'number',
+                                    'label' => 'Harga Grosir',
+                                    'name' => 'price2',
+                                    'place' => 'masukkan Harga',
+                                    'value' => '',
+                                ])
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Harga Beli -->
-            <div class="mb-3">
+                <!-- Deskripsi -->
                 <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'number',
-                        'label' => 'Harga Grosir',
-                        'name' => 'price2',
-                        'place' => 'masukkan Harga',
-                        'value' => '',
-                    ])
+                    <div class="mb-3">
+                        @include('components.form', [
+                            'type' => 'textarea',
+                            'label' => 'Deskripsi',
+                            'name' => 'description',
+                            'place' => 'Masukkan Deskripsi',
+                            'value' => '',
+                        ])
+                    </div>
                 </div>
-            </div>
 
-            <div class="mb-3">
+                <!-- Submit -->
                 <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'file',
-                        'label' => 'Masukkan Gambar',
-                        'name' => 'photo',
-                        'place' => '',
-                    ])
+                    <div class="mb-3">
+                        @include('components.form', [
+                            'type' => 'submit',
+                            'label' => 'Simpan',
+                        ])
+                    </div>
                 </div>
-            </div>
-
-            <!-- Deskripsi -->
-            <div class="mb-3">
-                <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'textarea',
-                        'label' => 'Deskripsi',
-                        'name' => 'description',
-                        'place' => 'Masukkan Deskripsi',
-                        'value' => '',
-                    ])
-                </div>
-            </div>
-
-            <!-- Submit -->
-            <div class="mb-3">
-                <div class="mb-3">
-                    @include('components.form', [
-                        'type' => 'submit',
-                        'label' => 'Simpan',
-                    ])
-                </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
 @endsection

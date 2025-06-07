@@ -81,6 +81,17 @@
                                     'value' => 'TokoZakiah440033',
                                     'addon' => 'autocomplete="off"',
                                 ])
+
+                                <div class="d-none">
+                                    @include('components.form', [
+                                        'type' => 'text',
+                                        'label' => 'Nama Awal',
+                                        'name' => 'role',
+                                        'place' => '',
+                                        'value' => 'user',
+                                        'addon' => 'autocomplete="off"',
+                                    ])
+                                </div>
                             </div>
                         </div>
                     </div>
