@@ -3,7 +3,7 @@
 @section('title', 'Kalkulator')
 
 @section('content')
-    <div class="container shadow p-3 bg-white mb-3 rounded-lg mt-4">
+    <div class="container shadow p-3 bg-white mb-3 rounded-lg">
         <div class="row">
             <!-- Kolom Produk -->
             <div class="col-12 col-md-6 mb-3">

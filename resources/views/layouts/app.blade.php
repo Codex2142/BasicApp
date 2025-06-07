@@ -15,6 +15,33 @@
 
     <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/favicon.png" type="image/png">
+
+    <style>
+        body {
+        font-family: Arial, Helvetica, sans-serif;
+        min-height: 100vh;
+        margin: 0;
+        position: relative;
+        background-color: #f8f9fa;
+        overflow-y: auto;
+    }
+
+    body::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 50%;
+        background-image: url('{{ asset('images/LockSceeen.png') }}');
+        background-repeat: no-repeat;
+        background-position: center top;
+        background-size: cover;
+        filter: blur(1px) brightness(50%);
+        z-index: -1;
+
+    }
+    </style>
 </head>
 
 <body class="h-100 bg-gray-100">

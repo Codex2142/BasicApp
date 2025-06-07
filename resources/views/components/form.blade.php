@@ -95,7 +95,7 @@
 @if ($type == 'file')
     <label for="{{ $name }}" class="form-label block mb-1 font-medium">{{ $label }}</label>
     <input type="file" id="{{ $name }}" name="{{ $name }} {!! $addon ?? '' !!}"
-        class="form-control form-control-sm border rounded p-1 w-full" />
+        class="form-control border rounded p-2 w-full" />
 @endif
 
 <!-- Textarea -->

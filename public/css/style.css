@@ -58,6 +58,7 @@ body {
 }
 
 .nav-link:hover {
+    border-radius: 0.375rem;
     background-color: #e7f1ff;
     color: #0a58ca;
 }
@@ -146,4 +147,20 @@ body {
 
 #passwordForm.show {
     max-height: 200px;
+}
+
+.dropdown-animated {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform: translateY(10px);
+    opacity: 0;
+    display: block !important;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.dropdown.show .dropdown-animated {
+    transform: translateY(0);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
 }
