@@ -85,8 +85,7 @@ class DashboardController extends Controller
         $table = 'users';
         $id = Auth::id();
         $data = DB::table($table)->where('id', $id)->get()->toArray();
-        dd($data);
-        return view('dashboard.settings', compact('result'));
+        return view('dashboard.settings', compact('data'));
     }
 
     /**

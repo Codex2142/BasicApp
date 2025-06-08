@@ -1,3 +1,161 @@
-<div>
-    <!-- The biggest battle is the war against ignorance. - Mustafa Kemal Atatürk -->
-</div>
+@php
+    // dd($data);
+@endphp
+@extends('layouts.app')
+
+@section('title', 'Profil')
+
+@section('content')
+
+    @if (session('success'))
+        @include('components.feedback', [
+            'type' => 'success',
+            'message' => session('success'),
+        ])
+    @endif
+
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            @include('components.feedback', [
+                'type' => 'error',
+                'message' => $error,
+            ])
+        @endforeach
+    @endif
+
+    <div class="container mt-4">
+        <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
+            <div class="btn btn-success rounded-lg my-3 mx-3">
+                <a href="/Beranda">Kembali</a>
+            </div>
+            <span class="md:mx-40 mr-10 fw-bold">Detail Profil</span>
+        </div>
+
+        <div class="container bg-white shadow p-4 rounded-lg">
+            <h1 class="display-6 fw-bold mb-4">Data Diri</h1>
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    @include('components.form', [
+                        'type' => 'text',
+                        'label' => 'Nama Depan',
+                        'name' => 'firstname',
+                        'place' => 'Nama Depan',
+                        'value' => old('firstname', $data[0]->firstname ?? ''),
+                        'addon' => 'readonly',
+                    ])
+                </div>
+                <div class="col-md-6 mb-3">
+                    @include('components.form', [
+                        'type' => 'text',
+                        'label' => 'Nama Belakang',
+                        'name' => 'lastname',
+                        'place' => 'Nama Depan',
+                        'value' => old('lastname', $data[0]->lastname ?? ''),
+                        'addon' => 'readonly',
+                    ])
+                </div>
+                <div class="col-md-6 mb-3">
+                    @include('components.form', [
+                        'type' => 'text',
+                        'label' => 'Username Login',
+                        'name' => 'username',
+                        'place' => 'Nama Depan',
+                        'value' => old('username', $data[0]->username ?? ''),
+                        'addon' => 'readonly',
+                    ])
+                </div>
+                <div class="col-md-6 mb-3">
+                    @include('components.form', [
+                        'type' => 'text',
+                        'label' => 'Tipe Pengguna',
+                        'name' => 'role',
+                        'place' => 'Nama Depan',
+                        'value' => old('role', $data[0]->role ?? ''),
+                        'addon' => 'readonly',
+                    ])
+                </div>
+            </div>
+            <div class="flex justify-center">
+                <button class="btn btn-warning rounded-md" data-bs-toggle="modal" data-bs-target="#editModal">
+                    <i class="bi bi-pencil-square"></i> Edit
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Modal Form Edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <form method="POST" action="{{ route('user.update', [$data[0]->id, 'profil']) }}">
+                @csrf
+                @method('POST') {{-- jika Anda pakai method POST pada route update, jika PUT maka ubah --}}
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="editModalLabel">Edit Profil</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        @include('components.form', [
+                            'type' => 'text',
+                            'label' => 'Nama Depan',
+                            'name' => 'firstname',
+                            'place' => 'Nama Depan',
+                            'value' => old('firstname', $data[0]->firstname ?? ''),
+                            'addon' => '',
+                        ])
+
+                        @include('components.form', [
+                            'type' => 'text',
+                            'label' => 'Nama Belakang',
+                            'name' => 'lastname',
+                            'place' => 'Nama Belakang',
+                            'value' => old('lastname', $data[0]->lastname ?? ''),
+                            'addon' => '',
+                        ])
+
+                        @include('components.form', [
+                            'type' => 'text',
+                            'label' => 'Username',
+                            'name' => 'username',
+                            'place' => 'Username',
+                            'value' => old('username', $data[0]->username ?? ''),
+                            'addon' => '',
+                        ])
+
+                        @include('components.form', [
+                            'type' => 'password',
+                            'label' => 'Password',
+                            'name' => 'password',
+                            'place' => 'Kosongkan jika tidak ingin ubah',
+                            'value' => '',
+                            'addon' => '',
+                        ])
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+@endsection
+
+@push('scripts')
+    <script>
+        document.getElementById('changePassword').addEventListener('click', function() {
+            const form = document.getElementById('passwordForm');
+            const input = form.querySelector('input[name="password"]');
+
+            form.classList.toggle('d-none');
+
+            if (!form.classList.contains('d-none')) {
+                this.textContent = 'Sembunyikan Password';
+            } else {
+                this.textContent = 'Ganti Password?';
+                if (input) input.value = '';
+            }
+        });
+    </script>
+@endpush

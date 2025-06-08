@@ -65,9 +65,9 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $id, ?string $source = null)
     {
-        $input = Arr::except($request->all(), ['_token', 'photo', 'photo_']);
+        $input = Arr::except($request->all(), ['_token', 'photo', 'photo_', '_method']);
         $table = 'users';
         $data = CrudHelper::table($table);
 
@@ -87,6 +87,11 @@ class UserController extends Controller
             return back()->withErrors($result['error']);
         }
 
+        // Kembali ke /profil
+        if ($source === 'profil') {
+            return redirect('/profil')->with('success', 'Berhasil Mengubah Profil');
+        }
+
         return redirect('/user')->with('success', 'Berhasil Mengubah Data');
     }
 
@@ -97,6 +102,6 @@ class UserController extends Controller
     {
         $table = 'users';
         $result = CrudHelper::masterDeleteData($table, $id);
-        return  redirect('/user')->with('success', 'Berhasil Menghapus Data');
+        return redirect('/user')->with('success', 'Berhasil Menghapus Data');
     }
 }
