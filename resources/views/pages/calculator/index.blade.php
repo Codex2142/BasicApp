@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Kalkulator')
-
+@php
+    // dd($result);
+@endphp
 @section('content')
     <div class="container mt-3 w-full">
         <div class="breadcrumbs-container text-white w-full">
@@ -27,7 +29,8 @@
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>Harga</th>
+                            <th>Harga Pasar</th>
+                            <th>Harga Grosir</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -35,12 +38,14 @@
                         @foreach ($result as $product)
                             <tr>
                                 <td>{{ $product->name }}</td>
+                                <td>Rp {{ number_format($product->price1, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
                                 <td>
                                     <button class="btn btn-sm btn-primary"
-                                        onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price2 }})">
+                                        onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price1 }}, {{ $product->price2 }})">
                                         <i class="bi bi-plus"></i>
                                     </button>
+
                                 </td>
                             </tr>
                         @endforeach
@@ -57,7 +62,8 @@
                             <tr>
                                 <th>Produk</th>
                                 <th>Jumlah</th>
-                                <th>Subtotal</th>
+                                <th>Pasar</th>
+                                <th>Grosir</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -138,18 +144,20 @@
         });
         let invoice = {};
 
-        function addToInvoice(id, name, price) {
+        function addToInvoice(id, name, price1, price2) {
             if (invoice[id]) {
                 invoice[id].qty += 1;
             } else {
                 invoice[id] = {
                     name,
-                    price,
+                    price1,
+                    price2,
                     qty: 1
                 };
             }
             renderInvoice();
         }
+
 
         function removeFromInvoice(id) {
             if (invoice[id]) {
@@ -176,38 +184,41 @@
             let total = 0;
 
             for (const [id, item] of Object.entries(invoice)) {
-                let subTotal = item.price * item.qty;
+                let subTotal = item.price2 * item.qty;
                 total += subTotal;
 
                 body += `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>
-                        <input type="number"
-                            value="${item.qty}"
-                            class="form-control text-center"
-                            style="min-width: 70px;"
-                            onchange="changeQty(${id}, this.value)">
-                    </td>
-                    <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${id})"><i class="bi bi-dash"></i></button>
-                    </td>
-                </tr>
-            `;
+            <tr>
+                <td>${item.name}</td>
+                <td>
+                    <input type="number"
+                        value="${item.qty}"
+                        class="form-control text-center"
+                        style="min-width: 70px;"
+                        onchange="changeQty(${id}, this.value)">
+                </td>
+                <td>Rp ${(item.price1 * item.qty).toLocaleString('id-ID')}</td>
+                <td>Rp ${(item.price2 * item.qty).toLocaleString('id-ID')}</td>
+                <td>
+                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${id})">
+                        <i class="bi bi-dash"></i>
+                    </button>
+                </td>
+            </tr>
+        `;
             }
 
             document.getElementById('invoice-body').innerHTML = body;
             document.getElementById('total-bayar').innerText = total.toLocaleString('id-ID');
             document.getElementById('total-bayar-final').value = total;
 
-            // Generate JSON string
             const jsonInput = {};
             for (const [id, item] of Object.entries(invoice)) {
                 jsonInput[id] = item.qty;
             }
             document.getElementById('json').value = JSON.stringify(jsonInput);
         }
+
 
         document.addEventListener("DOMContentLoaded", function() {
             const input = document.getElementById("searchInput");
