@@ -17,8 +17,11 @@ class User extends Authenticatable
      *
      * @var list<string>
      */
+
+    // Nama tabel
     protected $table = 'users';
 
+    // kolom CRUD
     protected $fillable = [
         'firstname',
         'lastname',
@@ -27,6 +30,7 @@ class User extends Authenticatable
         'role',
     ];
 
+    // kolom database => kolom tampilan tabel
     public static function Labelling()
     {
         return [
@@ -38,7 +42,36 @@ class User extends Authenticatable
         ];
     }
 
-    /**
+     // Peraturan kolom database => peraturannya
+    public static $rules = [
+        'firstname' => 'required|max:20',
+        'lastname' => 'required|max:20',
+        'username' => 'required|min:8|unique:users,username',
+        'password' => 'required',
+    ];
+
+    // jika melanggar aturan => menampilkan pesan
+    public static $messages = [
+        'firstname.required' => 'Nama Awal Wajib Diisi!',
+        'firstname.max' => 'Nama Awal Maksimal 20 Karakter!',
+
+        'lastname.required' => 'Nama Akhir Wajib Diisi!',
+        'lastname.max' => 'Nama Akhir Maksimal 20 Karakter!',
+
+        'username.required' => 'Username Wajib Diisi!',
+        'username.min' => 'Username Minimal 8 Karakter!',
+        'username.unique' => 'Tolong Gunakan Username Lain!',
+
+        'password.required' => 'password wajib diisi!',
+    ];
+
+
+
+
+
+
+
+     /**
      * The attributes that should be hidden for serialization.
      *
      * @var list<string>
@@ -60,25 +93,4 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
-
-    public static $rules = [
-        'firstname' => 'required|max:20',
-        'lastname' => 'required|max:20',
-        'username' => 'required|min:8|unique:users,username',
-        'password' => 'required',
-    ];
-
-    public static $messages = [
-        'firstname.required' => 'Nama Awal Wajib Diisi!',
-        'firstname.max' => 'Nama Awal Maksimal 20 Karakter!',
-
-        'lastname.required' => 'Nama Akhir Wajib Diisi!',
-        'lastname.max' => 'Nama Akhir Maksimal 20 Karakter!',
-
-        'username.required' => 'Username Wajib Diisi!',
-        'username.min' => 'Username Minimal 8 Karakter!',
-        'username.unique' => 'Tolong Gunakan Username Lain!',
-
-        'password.required' => 'password wajib diisi!',
-    ];
 }

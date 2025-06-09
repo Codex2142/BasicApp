@@ -14,6 +14,8 @@ class userSeeder extends Seeder
      */
     public function run(): void
     {
+
+        // admin
         User::create([
             'firstname' => 'admin',
             'lastname' => 'owner',
@@ -22,6 +24,7 @@ class userSeeder extends Seeder
             'role' => 'admin',
         ]);
 
+        // user biasa
          User::create([
             'firstname' => 'user',
             'lastname' => 'biasa',

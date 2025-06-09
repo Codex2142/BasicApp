@@ -16,6 +16,7 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles)
     {
+        // jika user tidak dikenal
         if (!Auth::check()) {
             return redirect()->route('auth.index');
         }
@@ -27,6 +28,7 @@ class RoleMiddleware
             abort(403, 'Akses Dilarang');
         }
 
+        // memproses login berhasil
         return $next($request);
     }
 }

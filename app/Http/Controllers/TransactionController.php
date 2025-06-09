@@ -11,17 +11,14 @@ use App\Providers\WebHelper;
 
 class TransactionController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
+    // menuju halaman utama transaksi
     public function index()
     {
         return view('pages.transaction.view');
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
+    // menuju halaman tambah transaksi
     public function create()
     {
         $table = 'Products';
@@ -30,74 +27,76 @@ class TransactionController extends Controller
         return view('pages.transaction.add', compact('result'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+    // proses penambahan transaksi
     public function store(Request $request)
     {
+        // pengecualian input dari $request
         $input = Arr::except($request->all(), ['_token', 'photo']);
 
+        // jika terdapat photo
         if ($request->hasFile('photo')) {
             // Simpan file dan ambil path relatifnya
             $input['photo'] = $request->file('photo')->store('images', 'public');
         }
 
+        // proses penambahan transaksi
         $table = 'transactions';
         $config = CrudHelper::table($table);
         $result = CrudHelper::masterInsertData($table, $config, $input);
+
+        // jika terdapat error
         if (isset($result['error'])) {
             return redirect('/transaksi/tambah')->withErrors($result['error']);
         }
+
+        // jika berhasil
         return redirect('/transaksi')->with('success', 'Berhasil Menyimpan Data');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id) {}
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    // menuju halaman edit
     public function edit($id)
     {
         $transaction = Transaction::findOrFail($id);
         $products = Product::all();
+
+        // mengambil tanggal untuk breadcrumbs
         $transaction->date = WebHelper::dateIndonesia($transaction->tanggal);
+
         return view('pages.transaction.edit', compact('transaction', 'products'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
+    // proses update transaksi
     public function update(Request $request, string $id)
     {
+        // pengecualian input dari $request
         $input = Arr::except($request->all(), ['_token', 'photo','_method']);
 
+        // jika terdapat photo di $request
         if ($request->hasFile('photo')) {
             $input['photo'] = $request->file('photo')->store('images', 'public');
         }
 
         $table = 'transactions';
-        $data = CrudHelper::table($table); // Mengambil fillable, Rules, Messages
+        $data = CrudHelper::table($table);
 
-        // Modifikasi aturan unique tanggal untuk ignore record dengan id $id
+        // Modifikasi aturan dari Model, unique tanggal untuk ignore record dengan id $id
         if (isset($data['rules']['tanggal'])) {
             $data['rules']['tanggal'] = 'required|unique:' . $table . ',tanggal,' . $id;
         }
 
+        // proses update
         $result = CrudHelper::masterUpdateData($table, $data, $input, $id);
 
+        // jika gagal
         if (isset($result['error'])) {
             return back()->withErrors($result['error']);
         }
 
+        // jika berhasil
         return redirect('/transaksi')->with('success', 'Berhasil Mengubah Data');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // mengahpus transaksi
     public function destroy(string $id)
     {
         $table = 'transactions';

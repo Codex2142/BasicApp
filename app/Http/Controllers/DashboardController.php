@@ -16,45 +16,52 @@ use ArielMejiaDev\LarapexCharts\Facades\LarapexChart;
 
 class DashboardController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Menuju Halaman dashboard utama
     public function index(Request $request)
     {
+        // Mendapatkan tanggal
         $now = Carbon::now();
         $year = (int) $request->input('year', $now->year);
         $month = (int) $request->input('month', $now->month);
 
-
+        // Mendapatkan bulan dengan Format MM
         $monthInd = WebHelper::getCurrentMonth();
 
+        // Mendapatkan semua produk
         $table = 'Products';
         $data = CrudHelper::table($table);
         $product = CrudHelper::masterShowData($table, $data);
 
+        // Mendapatkan semua transaksi yang sudah selesai di bulan N
         $transaction = Transaction::whereMonth('tanggal', $month)
             ->whereYear('tanggal', $year)
             ->where('status', 'done')
             ->orderBy('tanggal')
             ->get();
 
+        // Mendapatkan total User
         $users = User::get();
         $users = $users->count('id');
 
+        // Mendapatkan Total Pendapatan bulan N
         $total = $transaction->sum('total');
 
+        // Mendapatkan sumbu X untuk chart
         $grouped = $transaction->groupBy(function ($item) {
             return Carbon::parse($item->tanggal)->format('d M');
         });
 
+        // Mendapatkn sumbu Y untuk chart
         $labels = $grouped->keys()->toArray();
         $totals = $grouped->map(fn($group) => $group->sum('total'))->values()->toArray();
 
+        // Pembuatan Chart
         $chart = LarapexChart::barChart()
             ->addData('Total', $totals)
             ->setXAxis($labels)
             ->setHeight(400);
 
+        // menuju dashboard dengan parameter
         return view('dashboard.index', compact(
             'product',
             'transaction',
@@ -68,52 +75,12 @@ class DashboardController extends Controller
             ));
     }
 
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create() {}
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
+    // menuju ke Profil
     public function show()
     {
         $table = 'users';
         $id = Auth::id();
         $data = DB::table($table)->where('id', $id)->get()->toArray();
         return view('dashboard.settings', compact('data'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

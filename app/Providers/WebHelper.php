@@ -40,6 +40,7 @@ class WebHelper extends ServiceProvider
         return $word;
     }
 
+    // 22-12-2025 menjadi 22 Des 2025
     public static function dateIndonesia($date)
     {
         Carbon::setLocale('id');
@@ -47,6 +48,7 @@ class WebHelper extends ServiceProvider
         return $data;
     }
 
+    // mendapatkan bulan saat ini MM
     public static function getCurrentMonth()
     {
         Carbon::setLocale('id');

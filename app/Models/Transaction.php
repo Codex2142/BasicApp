@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
+    // Nama tabel
     protected $table = 'transactions';
 
+    // kolom CRUD
     protected $fillable = [
         'tanggal',
         'description',
@@ -16,6 +18,7 @@ class Transaction extends Model
         'status',
     ];
 
+    // kolom database => kolom tampilan tabel
     public static function Labelling()
     {
         return [
@@ -27,6 +30,7 @@ class Transaction extends Model
         ];
     }
 
+    // Peraturan kolom database => peraturannya
     public static $rules = [
         'tanggal' => 'required|unique:transactions,tanggal',
         'description' => 'required|max:30',
@@ -35,6 +39,7 @@ class Transaction extends Model
         'status' => 'required',
     ];
 
+    // jika melanggar aturan => menampilkan pesan
     public static $messages = [
         'tanggal.required' => 'Tanggal wajib diisi!',
         'tanggal.unique' => 'Tanggal Sudah ada!',

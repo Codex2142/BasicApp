@@ -18,12 +18,16 @@ class dataValidator implements ValidationRule
         //
     }
 
+    // melakukan validasi input dengan rule
     public static function masterValidator($input, $rule, $message){
         $validator = Validator::make($input, $rule, $message);
+
+        // jika error
         if($validator->fails()){
             return $validator->errors();
         }
 
+        // jika berhasil
         return true;
     }
 }

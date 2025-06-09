@@ -4,7 +4,11 @@ use Diglactic\Breadcrumbs\Breadcrumbs;
 use Diglactic\Breadcrumbs\Generator as BreadcrumbTrail;
 
 // Beranda
+Breadcrumbs::for('Toko', function(BreadcrumbTrail $trail){
+    $trail->push('Toko Zakiah', route('dashboard.index'));
+});
 Breadcrumbs::for('Beranda', function (BreadcrumbTrail $trail) {
+    $trail->parent('Toko');
     $trail->push('Beranda', route('dashboard.index'));
 });
 

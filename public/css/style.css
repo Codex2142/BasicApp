@@ -171,4 +171,18 @@ body {
 .breadcrumb-item.active::before,
 .breadcrumb-item::before {
     color: white !important;
+    transition: color 0.3s ease;
+}
+
+/* Hover untuk link breadcrumb */
+.breadcrumbs-container .breadcrumb-item a:hover {
+    color: #4DA8DA !important;
+    transition: color 0.3s ease;
+
+}
+.footer-style{
+    position: sticky;
+    bottom: 0px;
+    width: 100%;
+    z-index:0;
 }

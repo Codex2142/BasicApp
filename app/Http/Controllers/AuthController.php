@@ -10,13 +10,17 @@ class AuthController extends Controller
     /**
      * Display a listing of the resource.
      */
+
+    // Menampilkan halaman login
     public function index()
     {
         return view('auth.login');
     }
 
+    // Verifikasi Login
     public function loginProcess(Request $request)
     {
+        // Username / password
         $credentials = $request->only('username', 'password');
 
         if (Auth::attempt($credentials)) {
@@ -38,6 +42,7 @@ class AuthController extends Controller
         ]);
     }
 
+    // Logout
     public function logout(Request $request)
     {
         Auth::logout();
@@ -45,53 +50,5 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }

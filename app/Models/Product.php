@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Product extends Model
 {
+    // Nama tabel
     protected $table = 'products';
 
+    // kolom CRUD
     protected $fillable = [
         'name',
         'price1',
@@ -16,6 +18,7 @@ class Product extends Model
         'description',
     ];
 
+    // kolom database => kolom tampilan tabel
     public static function Labelling()
     {
         return [
@@ -27,6 +30,7 @@ class Product extends Model
         ];
     }
 
+    // Peraturan kolom database => peraturannya
     public static $rules = [
         'name' => 'required|max:50',
         'price1' => 'required|integer',
@@ -35,6 +39,7 @@ class Product extends Model
         'description' => 'nullable|max:255',
     ];
 
+    // jika melanggar aturan => menampilkan pesan
     public static $messages = [
         'name.required' => 'Nama wajib diisi!',
         'name.max' => 'Nama maksimal 50 karakter!',
@@ -46,7 +51,6 @@ class Product extends Model
         'price2.integer' => 'Harga Grosir harus berupa angka!',
 
         'description.max' => 'Deskripsi maksimal 255 karakter!',
-
     ];
 
 }

@@ -95,7 +95,7 @@
         <div class="modal-dialog">
             <form method="POST" action="{{ route('user.update', [$data[0]->id, 'profil']) }}">
                 @csrf
-                @method('POST') {{-- jika Anda pakai method POST pada route update, jika PUT maka ubah --}}
+                @method('POST')
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="editModalLabel">Edit Profil</h5>
@@ -151,17 +151,7 @@
 @push('scripts')
     <script>
         document.getElementById('changePassword').addEventListener('click', function() {
-            const form = document.getElementById('passwordForm');
-            const input = form.querySelector('input[name="password"]');
-
             form.classList.toggle('d-none');
-
-            if (!form.classList.contains('d-none')) {
-                this.textContent = 'Sembunyikan Password';
-            } else {
-                this.textContent = 'Ganti Password?';
-                if (input) input.value = '';
-            }
         });
     </script>
 @endpush
