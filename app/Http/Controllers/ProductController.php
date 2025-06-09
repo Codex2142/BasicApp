@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Providers\CrudHelper;
@@ -68,6 +69,10 @@ class ProductController extends Controller
         if ($request->hasFile('photo_')) {
             // Simpan file dan ambil path relatifnya
             $input['photo'] = $request->file('photo_')->store('images', 'public');
+        }
+
+        if (Transaction::where('status', 'pending')->exists()) {
+            return redirect('/produk')->withErrors('Tidak dapat mengganti ketika masih ada transaksi yang belum selesai!');
         }
 
         // proses update Produk

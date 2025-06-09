@@ -6,6 +6,8 @@
     $data = $Model::orderByDesc($sortBy)->get()->toArray();
     foreach ($data as &$item) {
         $item['tanggal'] = \App\Providers\WebHelper::dateIndonesia($item['tanggal']);
+        // decode JSON product jadi array supaya bisa diakses di view
+        $item['product_json'] = json_decode($item['product'], true);
     }
     unset($item);
 @endphp
@@ -14,7 +16,6 @@
         <div class="row row-cols-2 row-cols-lg-4 g-3">
 
             @foreach ($data as $d)
-                {{-- FOREACH --}}
                 <div class="col" data-tanggal="{{ $d['tanggal'] }}">
                     <div class="card mb-3 h-100 shadow">
                         <div class="row g-0 h-100 bg-gray-50">
@@ -48,7 +49,6 @@
                         </div>
                     </div>
                 </div>
-                {{-- END FOREACH --}}
             @endforeach
 
         </div>

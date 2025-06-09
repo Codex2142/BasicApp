@@ -112,7 +112,7 @@
                         </div>
 
                         {{-- JSON INPUT --}}
-                        <input type="textarea" id="json" name="product" class="d-none">
+                        <input type="hidden" id="json" name="product" class="d-none">
                     </div>
                     <div class="col">
                         <div class="mb-3">
@@ -180,33 +180,46 @@
         function renderInvoice() {
             let body = '';
             let total = 0;
+            let items = [];
 
             for (const [id, item] of Object.entries(invoice)) {
                 let subTotal = item.price * item.qty;
                 total += subTotal;
 
                 body += `
-            <tr>
-                <td>${item.name}</td>
-                <td><input type="number" value="${item.qty}" class="w-10 bg-gray-100 text-center" onchange="changeQty(${id}, this.value)"></td>
-                <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
-                <td>
-                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${id})"><i class="bi bi-dash"></i></button>
-                </td>
-            </tr>
-            `;
+                    <tr>
+                        <td>${item.name}</td>
+                        <td><input type="number" value="${item.qty}" class="w-10 bg-gray-100 text-center" onchange="changeQty('${id}', this.value)"></td>
+                        <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="removeFromInvoice('${id}')"><i class="bi bi-dash"></i></button>
+                        </td>
+                    </tr>
+                `;
+
+                // Tambah ke array items
+                items.push({
+                    id: parseInt(id),
+                    name: item.name,
+                    price: item.price,
+                    qty: item.qty,
+                    subtotal: subTotal
+                });
             }
 
             document.getElementById('invoice-body').innerHTML = body;
             document.getElementById('total-bayar').innerText = total.toLocaleString('id-ID');
             document.getElementById('total-bayar-final').value = total;
 
-            const jsonInput = {};
-            for (const [id, item] of Object.entries(invoice)) {
-                jsonInput[id] = item.qty;
-            }
-            document.getElementById('json').value = JSON.stringify(jsonInput);
+            // Bentuk JSON sesuai permintaan
+            const jsonOutput = {
+                items: items,
+                total: total
+            };
+            document.getElementById('json').value = JSON.stringify(jsonOutput);
         }
+
+
 
 
         function changeQty(id, qty) {
@@ -218,6 +231,7 @@
             }
             renderInvoice();
         }
+
 
         document.addEventListener("DOMContentLoaded", function() {
             const input = document.getElementById("searchInput");

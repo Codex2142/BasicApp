@@ -62,6 +62,9 @@ class TransactionController extends Controller
         // mengambil tanggal untuk breadcrumbs
         $transaction->date = WebHelper::dateIndonesia($transaction->tanggal);
 
+        $transaction->product = $transaction->product ?? '{}';
+
+        // dd($transaction, $products);
         return view('pages.transaction.edit', compact('transaction', 'products'));
     }
 

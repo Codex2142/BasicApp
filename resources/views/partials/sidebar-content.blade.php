@@ -1,3 +1,7 @@
+@php
+    use App\Models\Transaction;
+    $transactionBagde = Transaction::where('status', 'pending')->count();
+@endphp
 <div class="d-flex flex-column justify-between h-100">
     <!-- BAGIAN ATAS: Menu -->
     <div>
@@ -20,9 +24,17 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('transaksi*') ? 'navbar-active' : '' }}" href="/transaksi">
-                    <i class="bi bi-newspaper"></i> Transaksi
+                    <div class="d-flex justify-content-between align-items-center" style="width: 100%;">
+                        <span>
+                            <i class="bi bi-newspaper"></i> Transaksi
+                        </span>
+                        @if ($transactionBagde)
+                            <span class="badge rounded-full {{ request()->is('transaksi*') ? 'bg-white text-black' : 'text-slate-800 bg-warning' }}">{{ $transactionBagde }}</span>
+                        @endif
+                    </div>
                 </a>
             </li>
+
             @auth
                 @if (Auth::user()->role === 'admin')
                     <li class="nav-item">
