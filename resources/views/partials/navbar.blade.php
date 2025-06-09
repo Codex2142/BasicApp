@@ -9,7 +9,7 @@
             </svg>
         </button>
 
-        <a class="navbar-brand ms-2" href="/Beranda">MyApp</a>
+        <a class="navbar-brand ms-2 fw-bold text-white" href="/Beranda">Toko Zakiah</a>
         <!-- Right Side -->
         <div>
         </div>

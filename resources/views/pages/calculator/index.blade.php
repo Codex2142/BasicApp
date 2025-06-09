@@ -3,12 +3,18 @@
 @section('title', 'Kalkulator')
 
 @section('content')
+    <div class="container mt-3 w-full">
+        <div class="breadcrumbs-container text-white w-full">
+            {!! Breadcrumbs::render('Calculator') !!}
+        </div>
+    </div>
     <div class="container shadow p-3 bg-white mb-3 rounded-lg">
         <div class="row">
             <!-- Kolom Produk -->
             <div class="col-12 col-md-6 mb-3">
                 <div class="input-group mb-3">
-                    <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk" aria-label="Pencarian">
+                    <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
+                        aria-label="Pencarian">
                     <div class="input-group-append">
                         <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
                     </div>

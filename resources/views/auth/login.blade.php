@@ -9,7 +9,7 @@
                 <span class="inline-block rounded-full overflow-hidden w-64 h-64 shadow-lg ring-2 ring-gray-300">
                     <img src="{{ asset('images/Skirknamecard.jpg') }}" class="w-full h-full object-cover" />
                 </span>
-                <h1 class="text-3xl font-bold text-gray-900 mt-4">MyApp</h1>
+                <h1 class="text-3xl font-bold text-gray-900 mt-4">Toko Zakiah</h1>
             </div>
 
             @if ($errors->any())

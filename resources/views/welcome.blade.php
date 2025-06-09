@@ -144,3 +144,16 @@
         'value' => 'male',
     ])
 </div>
+
+
+@auth
+    @if (Auth::user()->role === 'admin')
+        <p>Selamat datang, Admin!</p>
+        <a href="{{ route('user.index') }}">Kelola Pengguna</a>
+    @elseif (Auth::user()->role === 'user')
+        <p>Selamat datang, Pengguna!</p>
+        <a href="{{ route('product.index') }}">Lihat Produk</a>
+    @else
+        <p>Role tidak dikenali.</p>
+    @endif
+@endauth

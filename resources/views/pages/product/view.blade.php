@@ -5,6 +5,12 @@
 @section('content')
 <div class="container mt-4">
 
+    <div class="container mt-3">
+        <div class="breadcrumbs-container text-white">
+            {!! Breadcrumbs::render('Product') !!}
+        </div>
+    </div>
+
     @if (session('success'))
         @include('components.feedback', [
             'type' => 'success',
@@ -20,6 +26,7 @@
             ])
         @endforeach
     @endif
+
 
     <div class="bg-white rounded-lg shadow my-4 mx-2 p-4">
         <div class="flex flex-col md:flex-row justify-between items-center gap-4">

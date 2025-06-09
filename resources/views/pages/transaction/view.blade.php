@@ -5,21 +5,28 @@
 @section('content')
 
     <div class="container mt-4">
-        @if (session('success'))
-        @include('components.feedback', [
-            'type' => 'success',
-            'message' => session('success'),
-        ])
-    @endif
 
-    @if ($errors->any())
-        @foreach ($errors->all() as $error)
-            @include('components.feedback',[
-                'type' =>'error',
-                'message' => $error,
+        <div class="container mt-3">
+            <div class="breadcrumbs-container text-white">
+                {!! Breadcrumbs::render('Transaction') !!}
+            </div>
+        </div>
+
+        @if (session('success'))
+            @include('components.feedback', [
+                'type' => 'success',
+                'message' => session('success'),
             ])
-        @endforeach
-    @endif
+        @endif
+
+        @if ($errors->any())
+            @foreach ($errors->all() as $error)
+                @include('components.feedback',[
+                    'type' =>'error',
+                    'message' => $error,
+                ])
+            @endforeach
+        @endif
     </div>
 
     <div class="bg-white rounded-lg shadow my-4 mx-2 p-4">

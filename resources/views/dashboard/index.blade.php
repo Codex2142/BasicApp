@@ -10,6 +10,12 @@
 @section('title', 'Beranda')
 
 @section('content')
+    <div class="container mt-3">
+        <div class="breadcrumbs-container text-white">
+            {!! Breadcrumbs::render('Beranda') !!}
+        </div>
+    </div>
+
     <div class="container mt-4">
         <div class="row g-3">
             {{-- TOTAL PRODUK --}}
@@ -30,14 +36,14 @@
             {{-- BELUM DIISI --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-red-200">MASIH KOSONGAN</div>
+                    <div class="card-header fw-bold bg-red-200">TOTAL PENGGUNA</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
                             <span class="p-3 bg-gray-300 rounded-full shadow">
-                                <i class="bi bi-cup-straw"></i>
+                                <i class="bi bi-people"></i>
                             </span>
                         </div>
-                        <h1 class="text-dashboard">10</h1>
+                        <h1 class="text-dashboard">{{ $users }}</h1>
                     </div>
                 </div>
             </div>
@@ -96,9 +102,11 @@
             {{-- CHART KECIL --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-4">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-green-200">SEDANG BERLANGSUNG</div>
+                    <div class="card-header fw-bold bg-green-200">BELUM DIISI</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around ">
+                        <div style="overflow-x: auto;">
 
+                        </div>
                     </div>
                 </div>
             </div>

@@ -4,6 +4,13 @@
 
 @section('content')
     <div class="container mt-4">
+
+        <div class="container mt-3">
+            <div class="breadcrumbs-container text-white">
+                {!! Breadcrumbs::render('UserEdit', $data) !!}
+            </div>
+        </div>
+
         @if ($errors->any())
             @foreach ($errors->all() as $error)
                 @include('components.feedback', [

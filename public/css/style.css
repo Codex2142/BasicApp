@@ -164,3 +164,11 @@ body {
     visibility: visible;
     pointer-events: auto;
 }
+
+.breadcrumbs-container .breadcrumb-item,
+.breadcrumbs-container .breadcrumb-item a,
+.breadcrumbs-container .breadcrumb-item.active,
+.breadcrumb-item.active::before,
+.breadcrumb-item::before {
+    color: white !important;
+}

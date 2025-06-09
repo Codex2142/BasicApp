@@ -7,6 +7,12 @@
 
 @section('content')
 
+    <div class="container mt-3">
+        <div class="breadcrumbs-container text-white">
+            {!! Breadcrumbs::render('Profile') !!}
+        </div>
+    </div>
+
     @if (session('success'))
         @include('components.feedback', [
             'type' => 'success',

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
@@ -37,6 +38,9 @@ class DashboardController extends Controller
             ->orderBy('tanggal')
             ->get();
 
+        $users = User::get();
+        $users = $users->count('id');
+
         $total = $transaction->sum('total');
 
         $grouped = $transaction->groupBy(function ($item) {
@@ -60,6 +64,7 @@ class DashboardController extends Controller
             'chart',
             'year',
             'now',
+            'users',
             ));
     }
 

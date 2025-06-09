@@ -7,6 +7,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Providers\CrudHelper;
+use App\Providers\WebHelper;
 
 class TransactionController extends Controller
 {
@@ -62,6 +63,7 @@ class TransactionController extends Controller
     {
         $transaction = Transaction::findOrFail($id);
         $products = Product::all();
+        $transaction->date = WebHelper::dateIndonesia($transaction->tanggal);
         return view('pages.transaction.edit', compact('transaction', 'products'));
     }
 

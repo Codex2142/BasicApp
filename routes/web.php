@@ -43,7 +43,7 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
         return view('pages.calculator.index', compact('result'));
-    });
+    })->name('calculator.index');
 
     Route::get('/logout', [AuthController::class, 'logout'])->name('auth.logout');
 });
