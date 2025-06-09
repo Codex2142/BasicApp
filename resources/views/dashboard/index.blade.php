@@ -21,7 +21,7 @@
             {{-- TOTAL PRODUK --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-amber-300">TOTAL PRODUK</div>
+                    <div class="card-header fw-bold bg-slate-800 text-white">TOTAL PRODUK</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
                             <span class="p-3 bg-gray-300 rounded-full shadow">
@@ -36,7 +36,7 @@
             {{-- BELUM DIISI --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-red-200">TOTAL PENGGUNA</div>
+                    <div class="card-header fw-bold bg-slate-700 text-white">TOTAL PENGGUNA</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
                             <span class="p-3 bg-gray-300 rounded-full shadow">
@@ -51,7 +51,7 @@
             {{-- TRANSAKSI --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold  bg-blue-200">TRANSAKSI
+                    <div class="card-header fw-bold  bg-slate-500 text-white">TRANSAKSI
                         {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
@@ -67,7 +67,7 @@
             {{-- PENDAPATAN --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-green-200">PENDAPATAN
+                    <div class="card-header fw-bold bg-slate-200">PENDAPATAN
                         {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around ">
                         <h1 class="text-dashboard">{{ 'Rp ' . number_format($total, 0, ',', '.') }}</h1>

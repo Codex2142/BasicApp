@@ -40,7 +40,7 @@
     <div class="pt-3 border-top">
         <ul class="nav flex-column gap-2">
             <li class="nav-item dropdown dropup">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#" class="nav-link bottom-nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="bi bi-person-circle"></i> {{ ucwords(Auth::user()->firstname) }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

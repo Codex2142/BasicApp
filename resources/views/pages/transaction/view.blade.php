@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
-                <span><h1 class="fw-bold">Tampilan diurutkan berdasarkan <span class="text-blue-700">Tanggal</span></h1></span>
+                <span><h1 class="fw-bold">Tampilan diurutkan berdasarkan <span class="text-stone-700">Tanggal</span></h1></span>
             </div>
         </div>
     </div>
