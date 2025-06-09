@@ -7,17 +7,19 @@ use App\Rules\dataValidator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
+use Illuminate\Support\Facades\Auth;
 
 class CrudHelper extends ServiceProvider
 {
     // untuk mendapatkan Model untuk =  Kolom CRUD / peraturan / pesan jika dilanggar
-    public static function table(string $table){
-
+    public static function table(string $table)
+    {
         // mendapatkan alamat Model
         $className = 'App\\Models\\' . Str::studly(Str::singular($table));
         $model = $className;
 
-        $data['fillable'] = (new $model)->getFillable();
+        $data['fillable'] = (new $model())->getFillable();
         $data['rules'] = $model::$rules ?? [];
         $data['messages'] = $model::$messages ?? [];
 
@@ -25,13 +27,15 @@ class CrudHelper extends ServiceProvider
     }
 
     // Menampilkan data kedalam Array
-    public static function masterShowData($table, $data){
+    public static function masterShowData($table, $data)
+    {
         $data = DB::table($table)->get()->toArray();
         return $data;
     }
 
     // Melakukan Insert Data
-    public static function masterInsertData($table, $data, $input){
+    public static function masterInsertData($table, $data, $input)
+    {
         $insert = $input;
 
         // Membuat data baru yang disusun untuk rule
@@ -45,25 +49,36 @@ class CrudHelper extends ServiceProvider
         $validatedData = dataValidator::masterValidator($insert, $rules, $messages);
 
         // jika kolom = password, maka wajib hashing
-        if(isset($insert['password'])) {
+        if (isset($insert['password'])) {
             $insert['password'] = Hash::make($insert['password']);
         }
 
         // jika berhasil menyimpan data
         if ($validatedData === true) {
             DB::table($table)->insert($insert);
+
+            // Mencatat Log
+            activity('insert')
+                ->causedBy(Auth::user())
+                ->withProperties([
+                    'data' => $insert,
+                    'table' => $table,
+                ])
+                ->log("Menambahkan data ke tabel $table");
+
+            // Kembali ke halaman
             $success = ['success' => 'Berhasil Menyimpan Data'];
             return $success;
 
-        // jika error
+            // jika error
         } else {
-            $error =  ['error' => $validatedData];
-            return $error ;
+            $error = ['error' => $validatedData];
+            return $error;
         }
     }
 
-
-    public static function masterUpdateData($table, $data, $input, $id){
+    public static function masterUpdateData($table, $data, $input, $id)
+    {
         $insert = $input;
 
         // Membuat data baru yang disusun untuk rule
@@ -77,44 +92,68 @@ class CrudHelper extends ServiceProvider
         $validatedData = dataValidator::masterValidator($insert, $rules, $messages);
 
         // jika kolom = password, maka wajib hashing
-        if(isset($insert['password'])) {
+        if (isset($insert['password'])) {
             $insert['password'] = Hash::make($insert['password']);
         }
 
         // jika berhasil update data
         if ($validatedData === true) {
             DB::table($table)->where('id', $id)->update($insert);
+
+            // Mencatat Log
+            activity('update')
+                ->causedBy(Auth::user())
+                ->withProperties([
+                    'data' => $insert,
+                    'id' => $id,
+                    'table' => $table,
+                ])
+                ->log("Mengubah data di tabel $table (ID: $id)");
+
+            // Kembali ke halaman
             $success = ['success' => 'Berhasil Mengubah Data'];
             return $success;
 
-        // jika error
+            // jika error
         } else {
-            $error =  ['error' => $validatedData];
-            return $error ;
+            $error = ['error' => $validatedData];
+            return $error;
         }
     }
 
-    // menghapus data
-    public static function masterDeleteData($table, $id){
+    // Menghapus
+    public static function masterDeleteData($table, $id)
+    {
         try {
             $delete = DB::table($table)->where('id', $id)->delete();
+
             if ($delete) {
+                // Log hanya jika berhasil menghapus
+                activity('delete')
+                    ->causedBy(Auth::user())
+                    ->withProperties([
+                        'id' => $id,
+                        'table' => $table,
+                    ])
+                    ->log("Menghapus data di tabel $table (ID: $id)");
 
-                // jika berhasil
-                $success = ['success' => 'Berhasil Menghapus Data'];
-                return $success;
+                return ['success' => 'Berhasil Menghapus Data'];
             } else {
-
-                // jika data tidak ada
-                $error = ['error' => 'Data Tidak Ditemukan'];
-                return $error;
+                // Tidak mencatat log jika data tidak ditemukan
+                return ['error' => 'Data Tidak Ditemukan'];
             }
-
         } catch (\Exception $e) {
+            // Log error jika gagal
+            activity('delete')
+                ->causedBy(Auth::user())
+                ->withProperties([
+                    'id' => $id,
+                    'table' => $table,
+                    'error' => $e->getMessage(),
+                ])
+                ->log("Gagal menghapus data di tabel $table (ID: $id)");
 
-            // jika error lain
-            $error = ['error' => 'Terjadi Kesalahan Saat Menghapus'];
-            return $error;
+            return ['error' => 'Terjadi Kesalahan Saat Menghapus'];
         }
     }
 
@@ -140,6 +179,4 @@ class CrudHelper extends ServiceProvider
             'messages' => $msgs,
         ];
     }
-
 }
-

@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Transaction extends Model
 {
+    // untuk Riwayat
+    use LogsActivity;
+
     // Nama tabel
     protected $table = 'transactions';
 
@@ -55,4 +60,14 @@ class Transaction extends Model
         'status.required' => 'Tolong pilih Status!',
 
     ];
+
+    // laravel Spatie
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logAll()
+            ->useLogName('transaksi')
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 }

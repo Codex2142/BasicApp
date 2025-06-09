@@ -42,6 +42,12 @@
                             <i class="bi bi-people"></i> Pengguna
                         </a>
                     </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('riwayat*') ? 'navbar-active' : '' }}" href="/riwayat">
+                            <i class="bi bi-archive"></i> Riwayat
+                        </a>
+                    </li>
                 @endif
             @endauth
 

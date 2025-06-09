@@ -81,3 +81,9 @@ Breadcrumbs::for('UserEdit', function (BreadcrumbTrail $trail, $data) {
     $trail->push('Edit');
     $trail->push($data[0]->username);
 });
+
+// Riwayat
+Breadcrumbs::for('Log', function (BreadcrumbTrail $trail) {
+    $trail->parent('Beranda');
+    $trail->push('Riwayat', route('log.index'));
+});

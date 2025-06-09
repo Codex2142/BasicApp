@@ -3,9 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\Activitylog\LogOptions;
 
 class Product extends Model
 {
+    // Untuk riwayat
+    use LogsActivity;
+
     // Nama tabel
     protected $table = 'products';
 
@@ -52,5 +57,15 @@ class Product extends Model
 
         'description.max' => 'Deskripsi maksimal 255 karakter!',
     ];
+
+    // laravel Spatie
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['name', 'price1', 'price2'])
+            ->useLogName('product')
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
+    }
 
 }

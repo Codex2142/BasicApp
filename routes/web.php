@@ -7,6 +7,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\UserController;
+use App\Providers\WebHelper;
+use Spatie\Activitylog\Models\Activity;
 
 // ADMIN ROLE
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -16,6 +18,13 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/user/update/{id}', [UserController::class, 'edit'])->name('user.edit');
     Route::post('/user/update/{id}/{source?}', [UserController::class, 'update'])->name('user.update');
     Route::delete('/user/{id}', [UserController::class, 'destroy'])->name('user.destroy');
+
+    Route::get('/riwayat',function(){
+        $logs = Activity::orderBy('created_at', 'desc')->get();
+        $data = WebHelper::logFormatter($logs);
+        $data = collect($data)->groupBy('tipe');
+        return view('pages.log.index', compact('data'));
+    })->name('log.index');
 });
 
 // ADMIN & USER

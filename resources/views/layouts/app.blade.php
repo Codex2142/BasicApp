@@ -15,6 +15,7 @@
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
+    @stack('styles')
     <style>
         body {
         font-family: Arial, Helvetica, sans-serif;

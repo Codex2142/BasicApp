@@ -26,6 +26,9 @@ class AuthController extends Controller
         if (Auth::attempt($credentials)) {
             $request->session()->regenerate();
 
+            // Mencatat aktivitas login
+            activity('login')->causedBy(Auth::user())->log('login');
+
             // Redirect sesuai role
             if (Auth::user()->role === 'admin') {
                 return redirect()->route('dashboard.index');
@@ -45,6 +48,9 @@ class AuthController extends Controller
     // Logout
     public function logout(Request $request)
     {
+        // Mencatat aktivitas logout
+        activity('logout')->causedBy(Auth::user())->log('logout');
+
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
