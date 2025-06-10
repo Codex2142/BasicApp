@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Providers\CrudHelper;
+use App\Providers\WebHelper;
 use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
@@ -54,6 +55,32 @@ class ProductController extends Controller
     // Menuju halaman Edit
     public function edit(string $id)
     {
+        $pendingTransactions = Transaction::where('status', 'pending')->get();
+
+        $tanggalTerpakai = []; // array untuk menampung tanggal transaksi yang pakai produk ini
+
+        foreach ($pendingTransactions as $transaction) {
+            $items = json_decode($transaction->product, true);
+
+            if (!empty($items['items'])) {
+                foreach ($items['items'] as $item) {
+                    if ((string) $item['id'] === $id) {
+                        // tambahkan tanggal ke array
+                        $tanggalTerpakai[] = WebHelper::dateIndonesia($transaction->tanggal);;
+                        break; // cukup sekali per transaksi
+                    }
+                }
+            }
+        }
+
+        if (!empty($tanggalTerpakai)) {
+
+            // Gabungkan semua tanggal jadi satu string
+            $pesanTanggal = implode(', ', $tanggalTerpakai);
+
+            return redirect('/produk')->withErrors("Masih Ada transaksi: $pesanTanggal");
+        }
+
         $table = 'products';
         $data = DB::table($table)->where('id', $id)->get()->toArray();
         return view('pages.product.edit', compact('data'));
@@ -71,10 +98,6 @@ class ProductController extends Controller
             $input['photo'] = $request->file('photo_')->store('images', 'public');
         }
 
-        if (Transaction::where('status', 'pending')->exists()) {
-            return redirect('/produk')->withErrors('Tidak dapat mengganti ketika masih ada transaksi yang belum selesai!');
-        }
-
         // proses update Produk
         $table = 'Products';
         $data = CrudHelper::table($table);
@@ -86,8 +109,7 @@ class ProductController extends Controller
         }
 
         // jika berhasil
-        return  redirect('/produk')->with('success', 'Berhasil Mengubah Data');
-
+        return redirect('/produk')->with('success', 'Berhasil Mengubah Data');
     }
 
     public function destroy(string $id)
@@ -95,7 +117,6 @@ class ProductController extends Controller
         // proses menghapus data
         $table = 'Products';
         $result = CrudHelper::masterDeleteData($table, $id);
-        return  redirect('/produk')->with('success', 'Berhasil Menghapus Data');
-
+        return redirect('/produk')->with('success', 'Berhasil Menghapus Data');
     }
 }
