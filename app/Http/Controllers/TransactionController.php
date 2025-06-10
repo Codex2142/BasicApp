@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Providers\CrudHelper;
 use App\Providers\WebHelper;
+use App\Rules\dataValidator;
 
 class TransactionController extends Controller
 {
@@ -21,10 +22,11 @@ class TransactionController extends Controller
     // menuju halaman tambah transaksi
     public function create()
     {
+        $dateDisabled = Transaction::get()->pluck('tanggal')->toArray();
         $table = 'Products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
-        return view('pages.transaction.add', compact('result'));
+        return view('pages.transaction.add', compact('result', 'dateDisabled'));
     }
 
     // proses penambahan transaksi
@@ -59,13 +61,16 @@ class TransactionController extends Controller
         $transaction = Transaction::findOrFail($id);
         $products = Product::all();
 
+        // Mengambil tanggal yang sudah diisi
+        $dateDisabled = Transaction::get()->pluck('tanggal')->toArray();
+        $dateDisabled = array_diff($dateDisabled, [$transaction->tanggal]);
+
         // mengambil tanggal untuk breadcrumbs
         $transaction->date = WebHelper::dateIndonesia($transaction->tanggal);
 
         $transaction->product = $transaction->product ?? '{}';
 
-        // dd($transaction, $products);
-        return view('pages.transaction.edit', compact('transaction', 'products'));
+        return view('pages.transaction.edit', compact('transaction', 'products', 'dateDisabled'));
     }
 
     // proses update transaksi
@@ -73,6 +78,11 @@ class TransactionController extends Controller
     {
         // pengecualian input dari $request
         $input = Arr::except($request->all(), ['_token', 'photo','_method']);
+
+        $productJson = $request->input('product');
+        if (dataValidator::isEmptyJson($productJson)) {
+            return back()->withErrors(['product' => 'Pilih minimal 1 produk!'])->withInput();
+        }
 
         // jika terdapat photo di $request
         if ($request->hasFile('photo')) {
@@ -102,6 +112,13 @@ class TransactionController extends Controller
     // mengahpus transaksi
     public function destroy(string $id)
     {
+
+        // Transaksi done tapi ingin dihapus
+        $transaction = Transaction::findOrFail($id);
+        if ($transaction->status === 'done') {
+            return redirect()->back()->withErrors('Tidak dapat menghapus transaksi yang sudah selesai.');
+        }
+
         $table = 'transactions';
         $result = CrudHelper::masterDeleteData($table, $id);
         return  redirect('/transaksi')->with('success', 'Berhasil Menghapus Data');

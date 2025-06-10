@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Transaksi - Tambah')
-
+@php
+    // dd($dateDisabled);
+@endphp
 @section('content')
     <div class="container mt-4 ">
         <div class="container mt-3">
@@ -40,9 +42,9 @@
                 </div>
                 <div class="col-12 col-md-6"></div>
                 <div class="col-md-6 md:sm-5">
-                    <h1 class="fw-bold display-6">Daftar Produk</h1>
-                    <table class="table table-auto" id="product-table">
-                        <thead>
+                    <h1 class="fw-bold display-6 text-center">Daftar Produk</h1>
+                    <table class="table table-auto table-hover" id="product-table">
+                        <thead class="table-dark">
                             <tr>
                                 <th>Nama</th>
                                 <th>Harga</th>
@@ -67,10 +69,10 @@
 
                 <!-- Kolom Invoice -->
                 <div class="col-md-6 mt-lg-6">
-                    <h1 class="fw-bold display-6">Keranjang</h1>
+                    <h1 class="fw-bold display-6 text-center">Keranjang</h1>
                     <div class="table-responsive">
-                        <table class="table table-auto" id="invoice-table">
-                            <thead>
+                        <table class="table table-auto table-hover" id="invoice-table">
+                            <thead class="table-dark">
                                 <tr>
                                     <th>Produk</th>
                                     <th>Jumlah</th>
@@ -98,10 +100,10 @@
                     <div class="col">
                         <div class="mb-3">
                             @include('components.form', [
-                                'type' => 'date',
+                                'type' => 'text',
                                 'label' => 'Tanggal',
                                 'name' => 'tanggal',
-                                'place' => '',
+                                'place' => 'Pilih Tanggal',
                                 'value' => '',
                             ])
                         </div>
@@ -291,6 +293,33 @@
                 renderPagination(totalPages);
                 displayRows();
             }
+
+            const dateDisabled = @json($dateDisabled);
+            const elemenTanggal = document.querySelector("#tanggal");
+            if (elemenTanggal) {
+                flatpickr(elemenTanggal, {
+                    locale: 'id',
+                    disable: dateDisabled,
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    defaultDate: "today",
+                });
+            } else {
+                console.warn("Elemen #tanggal tidak ditemukan.");
+            }
         });
     </script>
+@endpush
+
+@push('styles')
+    <style>
+        .flatpickr-day.disabled,
+        .flatpickr-disabled {
+        background-color: #ffe5e5 !important;
+        color: #d60000 !important;
+        pointer-events: none !important;
+        opacity: 1 !important;
+        }
+    </style>
 @endpush
