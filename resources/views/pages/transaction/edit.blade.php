@@ -18,7 +18,7 @@
         @endif
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-            <div class="btn btn-success rounded-lg my-3 mx-3">
+            <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
                 <a href="/transaksi">Kembali</a>
             </div>
             <span class="md:mx-40 mr-10 fw-bold">{{ $transaction->status == 'done' ? 'Detail' : 'Edit' }} Transaksi</span>
@@ -32,7 +32,7 @@
                             <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
                                 aria-label="Pencarian">
                             <div class="input-group-append">
-                                <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+                                <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                             </div>
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                                         <td>{{ $product->name }}</td>
                                         <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
                                         <td>
-                                            <button class="btn btn-sm btn-primary"
+                                            <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
                                                 onclick="addToInvoice({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price2 }})">
                                                 <i class="bi bi-plus"></i>
                                             </button>
@@ -141,9 +141,9 @@
 
                 @if ($transaction->status != 'done')
                     <div class="mb-3 d-flex justify-between gap-2">
-                        <button type="submit" class="btn btn-primary px-4 py-2 rounded">SIMPAN SEMENTARA</button>
+                        <button type="submit" class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">SIMPAN SEMENTARA</button>
                         @if (Auth::user()->role === 'admin')
-                            <button type="button" id="btnSelesai" class="btn btn-danger px-4 py-2 rounded">SIMPAN
+                            <button type="button" id="btnSelesai" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black	 px-4 py-2 rounded">SIMPAN
                                 PERMANEN</button>
                         @endif
                     </div>

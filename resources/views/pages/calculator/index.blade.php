@@ -72,11 +72,10 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="text-end">
-                    <h5>Total Bayar: Rp <span id="total-bayar">0</span></h5>
+                <div class="d-flex justify-around">
+                    <h5>Grosir: Rp <span id="total-bayar">0</span></h5>
+                    <h5>Pasar: Rp <span id="total-bayar2">0</span></h5>
                 </div>
-                <input type="hidden" id="json" name="product">
-                <input type="hidden" id="total-bayar-final" name="total">
             </div>
         </div>
     </div>
@@ -182,10 +181,13 @@
         function renderInvoice() {
             let body = '';
             let total = 0;
+            let total2 = 0;
 
             for (const [id, item] of Object.entries(invoice)) {
                 let subTotal = item.price2 * item.qty;
+                let subTotal2 = item.price1 * item.qty;
                 total += subTotal;
+                total2 += subTotal2
 
                 body += `
             <tr>
@@ -210,6 +212,7 @@
 
             document.getElementById('invoice-body').innerHTML = body;
             document.getElementById('total-bayar').innerText = total.toLocaleString('id-ID');
+            document.getElementById('total-bayar2').innerText = total2.toLocaleString('id-ID');
             document.getElementById('total-bayar-final').value = total;
 
             const jsonInput = {};

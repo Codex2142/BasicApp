@@ -114,6 +114,33 @@ class ProductController extends Controller
 
     public function destroy(string $id)
     {
+
+        $pendingTransactions = Transaction::where('status', 'pending')->orderBy('tanggal')->get();
+
+        $tanggalTerpakai = []; // array untuk menampung tanggal transaksi yang pakai produk ini
+
+        foreach ($pendingTransactions as $transaction) {
+            $items = json_decode($transaction->product, true);
+
+            if (!empty($items['items'])) {
+                foreach ($items['items'] as $item) {
+                    if ((string) $item['id'] === $id) {
+                        // tambahkan tanggal ke array
+                        $tanggalTerpakai[] = WebHelper::dateIndonesia($transaction->tanggal);;
+                        break; // cukup sekali per transaksi
+                    }
+                }
+            }
+        }
+
+        if (!empty($tanggalTerpakai)) {
+
+            // Gabungkan semua tanggal jadi satu string
+            $pesanTanggal = implode(', ', $tanggalTerpakai);
+
+            return redirect('/produk')->withErrors("Masih Ada transaksi: $pesanTanggal");
+        }
+
         // proses menghapus data
         $table = 'Products';
         $result = CrudHelper::masterDeleteData($table, $id);

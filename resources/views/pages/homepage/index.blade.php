@@ -125,6 +125,15 @@
         </div>
     </div>
 
+    <div class="container py-5">
+        <div class="row gap-2 justify-content-center">
+            <div class="col-md-5 bg-body-emphasis rounded shadow p-3">
+                <h2 class="mb-3">Kontak Kami</h2>
+                <span><a href="https://wa.me/+6282336546903" class="text-decoration-none text-black"> <i class="bi bi-telephone"></i> 082336546903</a></span>
+            </div>
+        </div>
+    </div>
+
     <!-- Produk Section -->
     <div class="container pb-5 bg-body-emphasis rounded shadow p-3">
         <h2 class="text-center mb-4">Produk Kami</h2>

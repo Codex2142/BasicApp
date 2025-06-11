@@ -10,8 +10,8 @@
                 <p>Apakah anda yakin ingin menghapus data ini?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" id="confirmSaveBtn">Ya, Hapus</button>
+                <button type="button" class="btn bg-gray-800 text-white hover:bg-gray-400 hover:text-black" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black" id="confirmSaveBtn">Ya, Hapus</button>
             </div>
         </div>
     </div>

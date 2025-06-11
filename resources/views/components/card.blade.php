@@ -17,7 +17,7 @@
 
             @foreach ($data as $d)
                 <div class="col" data-tanggal="{{ $d['tanggal'] }}">
-                    <div class="card border-0 mb-3 h-100 shadow">
+                    <div class="card border-0 mb-3 h-100 shadow-xl/30">
                         <div class="row g-0 h-100 bg-slate-100">
                             <div
                                 class="col-md-4 {{ $d['status'] == 'pending' ? 'bg-amber-500' : 'bg-green-500' }} d-flex align-items-center justify-center">
