@@ -41,12 +41,18 @@ class WebHelper extends ServiceProvider
         return $word;
     }
 
-    // 22-12-2025 menjadi 22 Des 2025
-    public static function dateIndonesia($date)
+    // 22-12-2025 menjadi 22 Des 2025 or 22 Des 2025
+    public static function dateIndonesia($date, ?string $source = null)
     {
-        Carbon::setLocale('id');
-        $data = Carbon::parse($date)->translatedFormat('d M Y');
-        return $data;
+        if ($source) {
+            Carbon::setLocale('id');
+            $data = Carbon::parse($date)->translatedFormat('H:i d M Y');
+            return $data;
+        } else {
+            Carbon::setLocale('id');
+            $data = Carbon::parse($date)->translatedFormat('d M Y');
+            return $data;
+        }
     }
 
     // mendapatkan bulan saat ini MM
@@ -67,12 +73,19 @@ class WebHelper extends ServiceProvider
                 'username' => $user->username,
                 'tipe' => $d->log_name,
                 'deskripsi' => $d->description,
-                'waktu' => self::dateIndonesia($d->created_at),
+                'waktu' => self::dateIndonesia($d->created_at, 'log'),
             ];
 
             // Tambah detail properties untuk insert/update/delete
             if (in_array($d->log_name, ['insert', 'update', 'delete'])) {
-                $entry['detail'] = $d->properties->toArray();
+                $props = json_decode($d->properties, true); // ubah jadi array
+
+                // Cek apakah ada key 'data' dan 'tanggal'
+                if (isset($props['data']['tanggal'])) {
+                    $props['data']['tanggal'] = self::dateIndonesia($props['data']['tanggal']);
+                }
+
+                $entry['detail'] = $props;
             }
 
             $formatted[] = $entry;

@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Transaksi - Edit')
-@php
-    // dd($transaction->tanggal);
-@endphp
+
 @section('content')
     <div class="container mt-4">
 
@@ -106,14 +104,10 @@
                 <div class="row">
                     <div class="col">
                         <div class="mb-3">
-                            @include('components.form', [
-                                'type' => 'text',
-                                'label' => 'Tanggal',
-                                'name' => 'tanggal',
-                                'place' => '',
-                                'value' => old('tanggal', $transaction->tanggal),
-                                'addon' => $transaction->status == 'done' ? 'readonly' : '',
-                            ])
+                            <label for="tanggal" class="form-label block mb-1 font-medium">Tanggal</label>
+                            <input type="text" id="tanggal" name="tanggal" placeholder=""
+                                value="{{ old('tanggal', $transaction->tanggal) }}"
+                                class="form-control border rounded p-2 w-full" />
                         </div>
 
                         <div class="mb-3">
@@ -140,6 +134,7 @@
                                 'value' => old('description', $transaction->description),
                                 'addon' => $transaction->status == 'done' ? 'readonly' : '',
                             ])
+                            <small id="wordCountInfo" class="text-sm text-gray-500">0 / 30 kata</small>
                         </div>
                     </div>
                 </div>
@@ -215,10 +210,10 @@
                     </td>
                     <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
                     ${transactionStatus !== 'done' ? `
-                                                <td>
-                                                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button>
-                                                </td>
-                                            ` : ''}
+                                                                <td>
+                                                                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button>
+                                                                </td>
+                                                            ` : ''}
                 </tr>
             `;
             }
@@ -323,8 +318,12 @@
                 document.getElementById('transaksiForm').submit();
             });
 
-            const dateDisabled = @json($dateDisabled);
+            // Objek datedisabled menjadi array
+            const dateDisabledRaw = @json($dateDisabled);
+            let dateDisabled = Object.values(dateDisabledRaw);
+
             const elemenTanggal = document.querySelector("#tanggal");
+            console.log("Elemen tanggal:", elemenTanggal);
             if (elemenTanggal) {
                 flatpickr(elemenTanggal, {
                     locale: 'id',
@@ -338,6 +337,36 @@
                 console.warn("Elemen #tanggal tidak ditemukan.");
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deskripsiTextarea = document.querySelector('textarea[name="description"]');
+            const charCount = document.getElementById('wordCountInfo');
+            const maxChar = 30;
+
+            if (deskripsiTextarea && charCount) {
+                function updateCharCount() {
+                    let length = deskripsiTextarea.value.length;
+
+                    if (length > maxChar) {
+                        deskripsiTextarea.value = deskripsiTextarea.value.slice(0, maxChar);
+                        length = maxChar;
+                    }
+
+                    charCount.textContent = `${length} / ${maxChar} karakter`;
+
+                    if (length === maxChar) {
+                        charCount.classList.add('text-danger');
+                    } else {
+                        charCount.classList.remove('text-danger');
+                    }
+                }
+
+                deskripsiTextarea.addEventListener('input', updateCharCount);
+
+                // Panggil sekali saat pertama kali halaman dibuka
+                updateCharCount();
+            }
+        });
     </script>
 @endpush
 
@@ -345,10 +374,10 @@
     <style>
         .flatpickr-day.disabled,
         .flatpickr-disabled {
-        background-color: #ffe5e5 !important;
-        color: #d60000 !important;
-        pointer-events: none !important;
-        opacity: 1 !important;
+            background-color: #ffe5e5 !important;
+            color: #d60000 !important;
+            pointer-events: none !important;
+            opacity: 1 !important;
         }
     </style>
 @endpush

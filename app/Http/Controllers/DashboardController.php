@@ -56,6 +56,7 @@ class DashboardController extends Controller
         // Pembuatan Chart
         $chart = LarapexChart::barChart()
             ->addData('Total', $totals)
+            ->setColors(['#443627'])
             ->setXAxis($labels)
             ->setHeight(400);
 

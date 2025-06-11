@@ -20,8 +20,8 @@
         <div class="row g-3">
             {{-- TOTAL PRODUK --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-slate-800 text-white">TOTAL PRODUK</div>
+                <div class="card border-0 text-center shadow">
+                    <div class="card-header border-0 fw-bold bg-slate-800 text-white">TOTAL PRODUK</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
                             <span class="p-3 bg-gray-300 rounded-full shadow">
@@ -35,8 +35,8 @@
 
             {{-- BELUM DIISI --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-slate-700 text-white">TOTAL PENGGUNA</div>
+                <div class="card border-0 text-center shadow">
+                    <div class="card-header border-0 fw-bold bg-slate-700 text-white">TOTAL PENGGUNA</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
                             <span class="p-3 bg-gray-300 rounded-full shadow">
@@ -50,8 +50,8 @@
 
             {{-- TRANSAKSI --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card text-center shadow">
-                    <div class="card-header fw-bold  bg-slate-500 text-white">TRANSAKSI
+                <div class="card border-0 text-center shadow">
+                    <div class="card-header border-0 fw-bold  bg-slate-500 text-white">TRANSAKSI
                         {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">
@@ -66,10 +66,10 @@
 
             {{-- PENDAPATAN --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-slate-200">PENDAPATAN
+                <div class="card border-0 text-center shadow">
+                    <div class="card-header border-0 fw-bold bg-slate-200">PENDAPATAN
                         {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}</div>
-                    <div class="card-body d-flex flex-wrap align-items-center justify-content-around ">
+                    <div class="card-body d-flex flex-wrap align-items-center justify-content-around overflow-x-auto">
                         <h1 class="text-dashboard">{{ 'Rp ' . number_format($total, 0, ',', '.') }}</h1>
                     </div>
                 </div>
@@ -77,7 +77,7 @@
 
             {{-- CHART BESAR --}}
             <div class="col-12 col-sm-12 col-md-12 col-lg-8">
-                <div class="card text-center shadow">
+                <div class="card border-0 text-center shadow">
                     <div class="d-flex justify-between mx-4 align-items-center mt-2">
                         <h1 class="display-6 fw-bold">
                             {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}
@@ -101,8 +101,8 @@
 
             {{-- CHART KECIL --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                <div class="card text-center shadow">
-                    <div class="card-header fw-bold bg-green-200">BELUM DIISI</div>
+                <div class="card border-0 text-center shadow">
+                    <div class="card-header border-0 fw-bold bg-green-200">BELUM DIISI</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around ">
                         <div style="overflow-x: auto;">
 

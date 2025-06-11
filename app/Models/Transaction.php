@@ -52,7 +52,7 @@ class Transaction extends Model
         'product.required' => 'Pilih minimal 1 produk!',
 
         'description.required' => 'Deskripsi wajib diisi!',
-        'description.max' => 'Deskripsi tidak boleh lebih dari 30',
+        'description.max' => 'Deskripsi tidak boleh lebih dari 30 karakter',
 
         'total.required' => 'Total wajib diisi!',
         'price2.integer' => 'Total harus berupa angka!',

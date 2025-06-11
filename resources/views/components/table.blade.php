@@ -52,12 +52,12 @@
                             @endforeach
                             <td class="px-4 py-3">
                                 <div class="flex justify-around space-x-2">
-                                    <span class="bg-amber-300 rounded-lg py-2 px-3 text-black">
+                                    <span class="bg-yellow-700 text-white hover:bg-yellow-400 hover:text-white rounded-lg py-2 px-3">
                                         <a href="{{ route($routes . '.edit', $d['id']) }}">
                                             <button class="hover:underline"><i class="bi bi-pencil-square"></i></button>
                                         </a>
                                     </span>
-                                    <span class="bg-red-600 rounded-lg py-2 px-3 text-black">
+                                    <span class="bg-red-800 text-white hover:bg-red-400 hover:text-black rounded-lg py-2 px-3">
                                         <button class="text-white hover:underline btn-table-delete"
                                             data-id="{{ $d['id'] }}"><i class="bi bi-trash"></i></button>
                                     </span>

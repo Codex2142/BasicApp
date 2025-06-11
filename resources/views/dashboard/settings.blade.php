@@ -31,7 +31,7 @@
 
     <div class="container mt-4">
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-            <div class="btn btn-success rounded-lg my-3 mx-3">
+            <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
                 <a href="/Beranda">Kembali</a>
             </div>
             <span class="md:mx-40 mr-10 fw-bold">Detail Profil</span>
@@ -82,7 +82,7 @@
                 </div>
             </div>
             <div class="flex justify-center">
-                <button class="btn btn-warning rounded-md" data-bs-toggle="modal" data-bs-target="#editModal">
+                <button class="btn bg-yellow-700 text-white hover:bg-yellow-400 hover:text-white rounded-md" data-bs-toggle="modal" data-bs-target="#editModal">
                     <i class="bi bi-pencil-square"></i> Edit
                 </button>
             </div>
@@ -139,8 +139,8 @@
                         ])
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                        <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                        <button type="button" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black	" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black">Simpan Perubahan</button>
                     </div>
                 </div>
             </form>

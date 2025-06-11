@@ -18,15 +18,15 @@
                     <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
                         aria-label="Pencarian">
                     <div class="input-group-append">
-                        <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+                        <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                     </div>
                 </div>
             </div>
             <div class="col-12 col-md-6"></div>
             <div class="col-md-6">
-                <h1 class="fw-bold display-6">Daftar Produk</h1>
-                <table class="table table-auto" id="product-table">
-                    <thead>
+                <h1 class="fw-bold display-6 text-center">Daftar Produk</h1>
+                <table class="table table-auto table-hover" id="product-table">
+                    <thead class="table-dark">
                         <tr>
                             <th>Nama</th>
                             <th>Harga Pasar</th>
@@ -41,7 +41,7 @@
                                 <td>Rp {{ number_format($product->price1, 0, ',', '.') }}</td>
                                 <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
                                 <td>
-                                    <button class="btn btn-sm btn-primary"
+                                    <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
                                         onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price1 }}, {{ $product->price2 }})">
                                         <i class="bi bi-plus"></i>
                                     </button>
@@ -55,10 +55,10 @@
 
             <!-- Kolom Invoice -->
             <div class="col-md-6">
-                <h1 class="fw-bold display-6">Keranjang</h1>
+                <h1 class="fw-bold display-6 text-center">Keranjang</h1>
                 <div class="table-responsive">
-                    <table class="table table-auto" id="invoice-table">
-                        <thead>
+                    <table class="table table-auto table-hover" id="invoice-table">
+                        <thead class="table-dark">
                             <tr>
                                 <th>Produk</th>
                                 <th>Jumlah</th>
@@ -200,7 +200,7 @@
                 <td>Rp ${(item.price1 * item.qty).toLocaleString('id-ID')}</td>
                 <td>Rp ${(item.price2 * item.qty).toLocaleString('id-ID')}</td>
                 <td>
-                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${id})">
+                    <button class="btn btn-sm bg-red-800 text-white hover:bg-red-400 hover:text-black" onclick="removeFromInvoice(${id})">
                         <i class="bi bi-dash"></i>
                     </button>
                 </td>

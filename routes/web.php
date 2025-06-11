@@ -63,4 +63,10 @@ Route::middleware('guest')->group(function () {
     Route::post('/login', [AuthController::class, 'loginProcess'])->name('auth.loginProcess');
 });
 
-
+// PUBLIC
+Route::get('homepage', function(){
+$table = 'Products';
+        $data = CrudHelper::table($table);
+        $result = CrudHelper::masterShowData($table, $data);
+        return view('pages.homepage.index', compact('result'));
+});

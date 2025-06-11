@@ -20,7 +20,7 @@
         @endif
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-            <div class="btn btn-success rounded-lg my-3 mx-3">
+            <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
                 <a href="/produk">Kembali</a>
             </div>
             <span class="md:mx-40 mr-10 fw-bold"> Edit Produk</span>
@@ -56,7 +56,7 @@
                     <!-- Button Toggle -->
                     <div class="flex flex-col items-center justify-center mt-4">
                         <button type="button" id="toggleBtn"
-                            class="bg-blue-600 text-white px-5 py-2 rounded-lg shadow hover:bg-blue-700 transition duration-300">
+                            class="bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-5 py-2 rounded-lg shadow transition duration-300">
                             <h3 id="toggleBtnText" class="text-lg font-semibold">Ganti Foto?</h3>
                         </button>
                     </div>
@@ -101,7 +101,7 @@
                                     'label' => 'Harga Grosir',
                                     'name' => 'price2',
                                     'place' => 'masukkan Harga',
-                                     'value' => old('price2', $data[0]->price2 ?? ''),
+                                    'value' => old('price2', $data[0]->price2 ?? ''),
                                     'addon' => 'autocomplete="off"',
                                 ])
                             </div>
@@ -129,10 +129,7 @@
                 <!-- Submit -->
                 <div class="mb-3">
                     <div class="mb-3">
-                        @include('components.form', [
-                            'type' => 'submit',
-                            'label' => 'Simpan',
-                        ])
+                        <button class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black submit" type="submit">Simpan</button>
                     </div>
                 </div>
             </form>

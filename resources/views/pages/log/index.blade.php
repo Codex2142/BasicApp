@@ -12,30 +12,32 @@
         </div>
 
         <div x-data="{ tab: 'login' }" class="w-full">
-            <div class="flex flex-wrap justify-start gap-2 border-b border-gray-200 mb-6">
+            <div class="flex flex-wrap justify-center gap-2 border-b border-gray-200 mb-6">
                 <button @click="tab = 'login'"
-                    :class="tab === 'login' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                    :class="tab === 'login' ? 'bg-blue-900 text-white' : 'bg-blue-400 text-black'"
                     class="px-4 py-2 rounded-t-md font-semibold transition">
-                    Login/Logout
+                    <i class="bi bi-door-open"></i>
                 </button>
                 <button @click="tab = 'insert'"
-                    :class="tab === 'insert' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                    :class="tab === 'insert' ? 'bg-green-900 text-white' : 'bg-green-400 text-black'"
                     class="px-4 py-2 rounded-t-md font-semibold transition">
-                    Insert
+                    <i class="bi bi-cart-plus"></i>
                 </button>
                 <button @click="tab = 'update'"
-                    :class="tab === 'update' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                    :class="tab === 'update' ? 'bg-yellow-700 text-white' : 'bg-yellow-400 text-black'"
                     class="px-4 py-2 rounded-t-md font-semibold transition">
-                    Update
+                    <i class="bi bi-pencil-square"></i>
                 </button>
                 <button @click="tab = 'delete'"
-                    :class="tab === 'delete' ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-700'"
+                    :class="tab === 'delete' ? 'bg-red-800 text-white' : 'bg-red-400 text-black'"
                     class="px-4 py-2 rounded-t-md font-semibold transition">
-                    Delete
+                    <i class="bi bi-trash"></i>
                 </button>
             </div>
             {{-- Content Tabs --}}
             <div>
+
+                {{-- DELETE --}}
                 <div x-show="tab === 'delete'" class="space-y-4">
                     @php
                         $deleteLogs = $data['delete'] ?? collect();
@@ -46,7 +48,7 @@
                     @else
                         @foreach ($deleteLogs as $log)
                             <div class="card mb-3 p-3">
-                                <strong>{{ strtoupper($log['deskripsi']) }}</strong>
+                                <strong class="text-red-600">{{ strtoupper($log['deskripsi']) }}</strong>
                                 <div class="mt-2 mb-3">
                                     <div><strong>ID Pengguna:</strong> {{ $log['user_id'] }}</div>
                                     <div><strong>Username:</strong> {{ $log['username'] ?? 'Unknown' }}</div>
@@ -94,6 +96,8 @@
                         @endforeach
                     @endif
                 </div>
+
+                {{-- LOGIN LOGOUT --}}
                 <div x-show="tab === 'login'" class="space-y-4">
 
                     @php
@@ -102,7 +106,7 @@
 
                     @forelse ($loginLogs as $log)
                         <div class="card mb-4 shadow p-4 rounded-lg bg-white">
-                            <h1 class="text-lg font-bold text-stone-700 display-6">{{ strtoupper($log['deskripsi']) }}</h1>
+                            <h1 class="text-lg font-bold text-blue-700 display-6">{{ strtoupper($log['deskripsi']) }}</h1>
                             <div class="mt-2 grid md:grid-cols-3 gap-4 text-sm text-gray-700">
                                 <div>
                                     <span class="font-semibold">ID Pengguna:</span><br>
@@ -123,6 +127,7 @@
                     @endforelse
                 </div>
 
+                {{-- INSERT --}}
                 <div x-show="tab === 'insert'" class="space-y-4">
                     @forelse ($data->get('insert', collect()) as $log)
                         <div class="card mb-4 shadow p-4 rounded-lg bg-white">
@@ -208,6 +213,7 @@
                 </div>
 
 
+                {{-- UPDATE --}}
                 <div x-show="tab === 'update'" class="space-y-4">
                     @php
                         $updateLogs = $data['update'] ?? [];
@@ -218,7 +224,7 @@
                     @else
                         @foreach ($updateLogs as $log)
                             <div class="card mb-3 p-3">
-                                <strong>{{ strtoupper($log['deskripsi']) }}</strong>
+                                <strong class="text-amber-600">{{ strtoupper($log['deskripsi']) }}</strong>
                                 <div class="mt-2 mb-3">
                                     <div><strong>ID Pengguna:</strong> {{ $log['user_id'] }}</div>
                                     <div><strong>Username:</strong> {{ $log['username'] ?? 'Unknown' }}</div>
@@ -289,6 +295,7 @@
                         @endforeach
                     @endif
                 </div>
+
             </div>
         </div>
     </div>

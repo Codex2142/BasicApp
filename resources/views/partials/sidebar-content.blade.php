@@ -2,14 +2,19 @@
     use App\Models\Transaction;
     $transactionBagde = Transaction::where('status', 'pending')->count();
 @endphp
-<div class="d-flex flex-column justify-between h-100">
+<div class="d-flex flex-column justify-between h-100 mr-4 pl-1 overflow-y-auto">
     <!-- BAGIAN ATAS: Menu -->
     <div>
         <h4 class="mb-4">Menu</h4>
         <ul class="nav flex-column gap-2">
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('Beranda') ? 'navbar-active' : '' }}" href="/Beranda">
-                    <i class="bi bi-house-door-fill"></i> Beranda
+                    <i class="bi bi-house"></i> Beranda
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('homepage') ? 'navbar-active' : '' }}" href="/homepage">
+                    <i class="bi bi-info-square"></i> Homepage
                 </a>
             </li>
             <li class="nav-item">

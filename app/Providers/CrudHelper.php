@@ -64,7 +64,7 @@ class CrudHelper extends ServiceProvider
                     'data' => $insert,
                     'table' => $table,
                 ])
-                ->log("Menambahkan data ke tabel $table");
+                ->log("Menambahkan Data ke $table");
 
             // Kembali ke halaman
             $success = ['success' => 'Berhasil Menyimpan Data'];
@@ -108,7 +108,7 @@ class CrudHelper extends ServiceProvider
                     'id' => $id,
                     'table' => $table,
                 ])
-                ->log("Mengubah data di tabel $table (ID: $id)");
+                ->log("Mengubah Data di $table (ID: $id)");
 
             // Kembali ke halaman
             $success = ['success' => 'Berhasil Mengubah Data'];
@@ -135,7 +135,7 @@ class CrudHelper extends ServiceProvider
                         'id' => $id,
                         'table' => $table,
                     ])
-                    ->log("Menghapus data di tabel $table (ID: $id)");
+                    ->log("Menghapus di $table (ID: $id)");
 
                 return ['success' => 'Berhasil Menghapus Data'];
             } else {
@@ -151,7 +151,7 @@ class CrudHelper extends ServiceProvider
                     'table' => $table,
                     'error' => $e->getMessage(),
                 ])
-                ->log("Gagal menghapus data di tabel $table (ID: $id)");
+                ->log("Gagal menghapus di $table (ID: $id)");
 
             return ['error' => 'Terjadi Kesalahan Saat Menghapus'];
         }

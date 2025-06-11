@@ -23,9 +23,7 @@ class TransactionController extends Controller
     public function create()
     {
         $dateDisabled = Transaction::get()->pluck('tanggal')->toArray();
-        $table = 'Products';
-        $data = CrudHelper::table($table);
-        $result = CrudHelper::masterShowData($table, $data);
+        $result = Product::orderBy('name')->get();
         return view('pages.transaction.add', compact('result', 'dateDisabled'));
     }
 
@@ -59,7 +57,7 @@ class TransactionController extends Controller
     public function edit($id)
     {
         $transaction = Transaction::findOrFail($id);
-        $products = Product::all();
+        $products = Product::orderBy('name')->get();
 
         // Mengambil tanggal yang sudah diisi
         $dateDisabled = Transaction::get()->pluck('tanggal')->toArray();

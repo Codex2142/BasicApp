@@ -1,9 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Transaksi - Tambah')
-@php
-    // dd($dateDisabled);
-@endphp
+
 @section('content')
     <div class="container mt-4 ">
         <div class="container mt-3">
@@ -22,7 +20,7 @@
         @endif
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-            <div class="btn btn-success rounded-lg my-3 mx-3">
+            <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
                 <a href="/transaksi">Kembali</a>
             </div>
             <span class="md:mx-40 mr-10 fw-bold"> Tambah Transaksi</span>
@@ -36,7 +34,7 @@
                         <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
                             aria-label="Pencarian">
                         <div class="input-group-append">
-                            <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+                            <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                         </div>
                     </div>
                 </div>
@@ -57,7 +55,7 @@
                                     <td>{{ $product->name }}</td>
                                     <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
                                     <td>
-                                        <button class="btn btn-sm btn-primary"
+                                        <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
                                             onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price2 }})"><i
                                                 class="bi bi-plus"></i></button>
                                     </td>
@@ -126,6 +124,7 @@
                                 'value' => '',
                                 'addon' => 'autocomplete="off"',
                             ])
+                            <small id="wordCountInfo" class="text-sm text-gray-500">0 / 30 kata</small>
                         </div>
 
                         <div class="mb-3 d-none">
@@ -144,7 +143,7 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn btn-primary px-4 py-2 rounded">Simpan</button>
+                    <button type="submit" class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">Simpan</button>
                 </div>
             </form>
         </div>
@@ -194,7 +193,7 @@
                         <td><input type="number" value="${item.qty}" class="w-10 bg-gray-100 text-center" onchange="changeQty('${id}', this.value)"></td>
                         <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
                         <td>
-                            <button class="btn btn-sm btn-danger" onclick="removeFromInvoice('${id}')"><i class="bi bi-dash"></i></button>
+                            <button class="btn btn-sm bg-red-800 text-white hover:bg-red-400 hover:text-black" onclick="removeFromInvoice('${id}')"><i class="bi bi-dash"></i></button>
                         </td>
                     </tr>
                 `;
@@ -309,6 +308,33 @@
                 console.warn("Elemen #tanggal tidak ditemukan.");
             }
         });
+
+        document.addEventListener("DOMContentLoaded", function() {
+            const deskripsiTextarea = document.querySelector('textarea[name="description"]');
+            const charCount = document.getElementById('wordCountInfo');
+            const maxChar = 30;
+
+            if (deskripsiTextarea && charCount) {
+                deskripsiTextarea.addEventListener('input', function() {
+                    let length = this.value.length;
+
+                    // Potong jika lebih dari 30 karakter
+                    if (length > maxChar) {
+                        this.value = this.value.slice(0, maxChar);
+                        length = maxChar;
+                    }
+
+                    charCount.textContent = `${length} / ${maxChar} karakter`;
+
+                    // Optional: warna merah jika penuh
+                    if (length === maxChar) {
+                        charCount.classList.add('text-danger');
+                    } else {
+                        charCount.classList.remove('text-danger');
+                    }
+                });
+            }
+        });
     </script>
 @endpush
 
@@ -316,10 +342,10 @@
     <style>
         .flatpickr-day.disabled,
         .flatpickr-disabled {
-        background-color: #ffe5e5 !important;
-        color: #d60000 !important;
-        pointer-events: none !important;
-        opacity: 1 !important;
+            background-color: #ffe5e5 !important;
+            color: #d60000 !important;
+            pointer-events: none !important;
+            opacity: 1 !important;
         }
     </style>
 @endpush

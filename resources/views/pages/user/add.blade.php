@@ -21,7 +21,7 @@
         @endif
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
-            <div class="btn btn-success rounded-lg my-3 mx-3">
+            <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
                 <a href="/user">Kembali</a>
             </div>
             <span class="md:mx-40 mr-10 fw-bold"> Tambah Produk</span>
@@ -107,10 +107,9 @@
                 <!-- Submit -->
                 <div class="mb-3">
                     <div class="mb-3">
-                        @include('components.form', [
-                            'type' => 'submit',
-                            'label' => 'Simpan',
-                        ])
+                        <button type="submit"
+                            class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">Simpan</button>
+
                     </div>
                 </div>
             </form>

@@ -55,7 +55,7 @@ class ProductController extends Controller
     // Menuju halaman Edit
     public function edit(string $id)
     {
-        $pendingTransactions = Transaction::where('status', 'pending')->get();
+        $pendingTransactions = Transaction::where('status', 'pending')->orderBy('tanggal')->get();
 
         $tanggalTerpakai = []; // array untuk menampung tanggal transaksi yang pakai produk ini
 

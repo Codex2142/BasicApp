@@ -36,15 +36,15 @@
             <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
 
                 <!-- Tombol Tambah -->
-                <a href="/transaksi/tambah" class="btn btn-success rounded-lg">
+                <a href="/transaksi/tambah" class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg">
                     Tambah
                 </a>
 
                 <!-- Input Cari -->
                 <div class="input-group">
-                    <input id="searchInput" type="text" class="form-control" placeholder="Cari" aria-label="Pencarian">
+                    <input id="searchInput" type="text" class="form-control" placeholder="Cari Tanggal" aria-label="Pencarian">
                     <div class="input-group-append">
-                        <span id="searchDelete" class="btn btn-danger from-group-view">X</span>
+                        <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                     </div>
                 </div>
             </div>
@@ -59,7 +59,7 @@
         'table' => 'Transactions',      {{-- TABEL DATABASE --}}
         'sortBy' => 'tanggal',         {{-- PENGURUTAN --}}
     ])
-    <div class="btn btn-success button-fixed-corner">
+    <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black button-fixed-corner">
         <a href="/transaksi/tambah"><i class="bi bi-plus"></i></a>
     </div>
     @include('components.modal-delete')
