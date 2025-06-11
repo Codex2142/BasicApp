@@ -65,8 +65,12 @@ Route::middleware('guest')->group(function () {
 
 // PUBLIC
 Route::get('homepage', function(){
-$table = 'Products';
+        $table = 'Products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
+        usort($result, function ($a, $b) {
+            return strcmp($a->name, $b->name); // urutkan ASC
+        });
+
         return view('pages.homepage.index', compact('result'));
 });
