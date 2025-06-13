@@ -12,31 +12,29 @@
                     <i class="bi bi-house"></i> Beranda
                 </a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('homepage') ? 'navbar-active' : '' }}" href="/homepage">
-                    <i class="bi bi-info-square"></i> Homepage
-                </a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('kalkulator*') ? 'navbar-active' : '' }}" href="/kalkulator">
-                    <i class="bi bi-calculator"></i> Kalkulator
-                </a>
-            </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('produk*') ? 'navbar-active' : '' }}" href="/produk">
                     <i class="bi bi-cup-straw"></i> Produk
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link {{ request()->is('transaksi*') ? 'navbar-active' : '' }}" href="/transaksi">
+                <a class="nav-link {{ request()->is('Kiriman*') ? 'navbar-active' : '' }}" href="/Kiriman">
                     <div class="d-flex justify-content-between align-items-center" style="width: 100%;">
                         <span>
-                            <i class="bi bi-newspaper"></i> Transaksi
+                            <i class="bi bi-truck"></i> Kiriman
                         </span>
                         @if ($transactionBagde)
-                            <span class="badge rounded-full {{ request()->is('transaksi*') ? 'bg-white text-black' : 'text-slate-800 bg-warning' }}">{{ $transactionBagde }}</span>
+                            <span
+                                class="badge rounded-full {{ request()->is('Kiriman*') ? 'bg-white text-black' : 'text-slate-800 bg-warning' }}">{{ $transactionBagde }}</span>
                         @endif
                     </div>
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('kalkulator*') ? 'navbar-active' : '' }}" href="/kalkulator">
+                    <i class="bi bi-calculator"></i> Kalkulator
                 </a>
             </li>
 
@@ -56,6 +54,15 @@
                 @endif
             @endauth
 
+
+            <div class="border-t border-gray-300 mt-4"></div>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('homepage') ? 'navbar-active' : '' }}" href="/">
+                    <i class="bi bi-info-square"></i> Homepage
+                </a>
+            </li>
+
         </ul>
     </div>
 
@@ -63,7 +70,8 @@
     <div class="pt-3 border-top">
         <ul class="nav flex-column gap-2">
             <li class="nav-item dropdown dropup">
-                <a href="#" class="nav-link bottom-nav-link dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                <a href="#" class="nav-link bottom-nav-link dropdown-toggle" data-bs-toggle="dropdown"
+                    aria-expanded="false">
                     <i class="bi bi-person-circle"></i> {{ ucwords(Auth::user()->firstname) }}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">

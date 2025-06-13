@@ -8,7 +8,7 @@
             </div>
             <div class="modal-body d-flex flex-column align-items-center text-center">
                 <i class="bi bi-exclamation-triangle modal-danger-save mb-3"></i>
-                <p>Apakah Anda yakin ingin menyimpan data transaksi ini secara permanen?</p>
+                <p>Apakah Anda yakin ingin menyimpan data Kiriman ini secara permanen?</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn bg-gray-800 text-white hover:bg-gray-400 hover:text-black" data-bs-dismiss="modal">Batal</button>

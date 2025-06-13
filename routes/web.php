@@ -29,7 +29,6 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 
 // ADMIN & USER
 Route::middleware(['auth', 'role:admin,user'])->group(function () {
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard.home');
     Route::get('/Beranda', [DashboardController::class, 'index'])->name('dashboard.index');
     Route::get('profil', [DashboardController::class, 'show'])->name('dashboard.show');
 
@@ -40,12 +39,12 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::post('/produk/update/{id}', [ProductController::class, 'update'])->name('product.update');
     Route::delete('/produk/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
-    Route::get('/transaksi', [TransactionController::class, 'index'])->name('transaction.index');
-    Route::get('/transaksi/tambah', [TransactionController::class, 'create'])->name('transaction.create');
-    route::post('/transaksi/tambah', [TransactionController::class, 'store'])->name('transaction.store');
-    Route::get('/transaksi/update/{id}', [TransactionController::class, 'edit'])->name('transaction.edit');
-    route::put('/transaksi/update/{id}', [TransactionController::class, 'update'])->name('transaction.update');
-    Route::get('/transaksi/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
+    Route::get('/Kiriman', [TransactionController::class, 'index'])->name('transaction.index');
+    Route::get('/Kiriman/tambah', [TransactionController::class, 'create'])->name('transaction.create');
+    route::post('/Kiriman/tambah', [TransactionController::class, 'store'])->name('transaction.store');
+    Route::get('/Kiriman/update/{id}', [TransactionController::class, 'edit'])->name('transaction.edit');
+    route::put('/Kiriman/update/{id}', [TransactionController::class, 'update'])->name('transaction.update');
+    Route::get('/Kiriman/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
 
     Route::get('kalkulator', function () {
         $table = 'Products';
@@ -64,7 +63,7 @@ Route::middleware('guest')->group(function () {
 });
 
 // PUBLIC
-Route::get('homepage', function(){
+Route::get('/', function(){
         $table = 'Products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
@@ -74,3 +73,4 @@ Route::get('homepage', function(){
 
         return view('pages.homepage.index', compact('result'));
 });
+

@@ -53,7 +53,7 @@
     {{-- TABLE GENERATOR --}}
     @include('components.table', [
         'head' => 'Semua Produk',   {{-- JUDUL TABEL --}}
-        'table' => 'Products',      {{-- TABEL DATABASE --}}
+        'table' => 'products',      {{-- TABEL DATABASE --}}
         'sortBy' => 'name',         {{-- PENGURUTAN --}}
     ])
 </div>

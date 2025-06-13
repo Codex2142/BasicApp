@@ -62,7 +62,7 @@
                 </div>
 
                 <!-- Main Content -->
-                <main class="col-lg-10 ms-auto px-4 py-4 overflow-auto -mt-5">
+                <main class="col-lg-10 ms-auto px-lg-4 py-4 overflow-auto -mt-5">
                     @yield('content')
                 </main>
             </div>

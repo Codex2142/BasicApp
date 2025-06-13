@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Transaksi')
+@section('title', 'Kiriman')
 
 @section('content')
 
@@ -36,7 +36,7 @@
             <div class="flex flex-col md:flex-row items-center gap-3 w-full md:w-auto">
 
                 <!-- Tombol Tambah -->
-                <a href="/transaksi/tambah" class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg">
+                <a href="/Kiriman/tambah" class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg">
                     Tambah
                 </a>
 
@@ -55,12 +55,12 @@
     </div>
 
     @include('components.card',[
-        'head' => 'Semua Transaksi',   {{-- JUDUL TABEL --}}
+        'head' => 'Semua Kiriman',   {{-- JUDUL TABEL --}}
         'table' => 'Transactions',      {{-- TABEL DATABASE --}}
         'sortBy' => 'tanggal',         {{-- PENGURUTAN --}}
     ])
     <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black button-fixed-corner">
-        <a href="/transaksi/tambah"><i class="bi bi-plus"></i></a>
+        <a href="/Kiriman/tambah"><i class="bi bi-plus"></i></a>
     </div>
     @include('components.modal-delete')
 @endsection
@@ -100,7 +100,7 @@
         button.addEventListener('click', function () {
             const card = button.closest('.col');
             const id = card.querySelector('.card-button-edit')?.href.split('/').pop();
-            selectedDeleteUrl = `/transaksi/${id}`;
+            selectedDeleteUrl = `/Kiriman/${id}`;
             const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
             modal.show();
         });

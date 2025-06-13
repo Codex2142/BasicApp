@@ -66,7 +66,7 @@ class Transaction extends Model
     {
         return LogOptions::defaults()
             ->logAll()
-            ->useLogName('transaksi')
+            ->useLogName('Kiriman')
             ->logOnlyDirty()
             ->dontSubmitEmptyLogs();
     }

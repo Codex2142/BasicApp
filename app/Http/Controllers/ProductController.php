@@ -14,7 +14,7 @@ class ProductController extends Controller
     // Menuju halaman Produk
     public function index()
     {
-        $table = 'Products';
+        $table = 'products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterShowData($table, $data);
         return view('pages.product.view', compact('result'));
@@ -57,7 +57,7 @@ class ProductController extends Controller
     {
         $pendingTransactions = Transaction::where('status', 'pending')->orderBy('tanggal')->get();
 
-        $tanggalTerpakai = []; // array untuk menampung tanggal transaksi yang pakai produk ini
+        $tanggalTerpakai = []; // array untuk menampung tanggal Kiriman yang pakai produk ini
 
         foreach ($pendingTransactions as $transaction) {
             $items = json_decode($transaction->product, true);
@@ -67,7 +67,7 @@ class ProductController extends Controller
                     if ((string) $item['id'] === $id) {
                         // tambahkan tanggal ke array
                         $tanggalTerpakai[] = WebHelper::dateIndonesia($transaction->tanggal);;
-                        break; // cukup sekali per transaksi
+                        break; // cukup sekali per Kiriman
                     }
                 }
             }
@@ -78,7 +78,7 @@ class ProductController extends Controller
             // Gabungkan semua tanggal jadi satu string
             $pesanTanggal = implode(', ', $tanggalTerpakai);
 
-            return redirect('/produk')->withErrors("Masih Ada transaksi: $pesanTanggal");
+            return redirect('/produk')->withErrors("Masih Ada Kiriman: $pesanTanggal");
         }
 
         $table = 'products';
@@ -99,7 +99,7 @@ class ProductController extends Controller
         }
 
         // proses update Produk
-        $table = 'Products';
+        $table = 'products';
         $data = CrudHelper::table($table);
         $result = CrudHelper::masterUpdateData($table, $data, $input, $id);
 
@@ -117,7 +117,7 @@ class ProductController extends Controller
 
         $pendingTransactions = Transaction::where('status', 'pending')->orderBy('tanggal')->get();
 
-        $tanggalTerpakai = []; // array untuk menampung tanggal transaksi yang pakai produk ini
+        $tanggalTerpakai = []; // array untuk menampung tanggal Kiriman yang pakai produk ini
 
         foreach ($pendingTransactions as $transaction) {
             $items = json_decode($transaction->product, true);
@@ -127,7 +127,7 @@ class ProductController extends Controller
                     if ((string) $item['id'] === $id) {
                         // tambahkan tanggal ke array
                         $tanggalTerpakai[] = WebHelper::dateIndonesia($transaction->tanggal);;
-                        break; // cukup sekali per transaksi
+                        break; // cukup sekali per Kiriman
                     }
                 }
             }
@@ -138,11 +138,11 @@ class ProductController extends Controller
             // Gabungkan semua tanggal jadi satu string
             $pesanTanggal = implode(', ', $tanggalTerpakai);
 
-            return redirect('/produk')->withErrors("Masih Ada transaksi: $pesanTanggal");
+            return redirect('/produk')->withErrors("Masih Ada Kiriman: $pesanTanggal");
         }
 
         // proses menghapus data
-        $table = 'Products';
+        $table = 'products';
         $result = CrudHelper::masterDeleteData($table, $id);
         return redirect('/produk')->with('success', 'Berhasil Menghapus Data');
     }

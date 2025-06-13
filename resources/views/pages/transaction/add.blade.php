@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Transaksi - Tambah')
+@section('title', 'Kiriman - Tambah')
 
 @section('content')
     <div class="container mt-4 ">
@@ -21,9 +21,9 @@
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
             <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
-                <a href="/transaksi">Kembali</a>
+                <a href="/Kiriman">Kembali</a>
             </div>
-            <span class="md:mx-40 mr-10 fw-bold"> Tambah Transaksi</span>
+            <span class="md:mx-40 mr-10 fw-bold"> Tambah Kiriman</span>
         </div>
 
         <div class="container shadow p-3 bg-white mb-3 rounded-lg">
@@ -34,7 +34,8 @@
                         <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
                             aria-label="Pencarian">
                         <div class="input-group-append">
-                            <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
+                            <span id="searchDelete"
+                                class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                         </div>
                     </div>
                 </div>
@@ -46,6 +47,7 @@
                             <tr>
                                 <th>Nama</th>
                                 <th>Harga</th>
+                                <th>Stok</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -54,10 +56,12 @@
                                 <tr>
                                     <td>{{ $product->name }}</td>
                                     <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
+                                    <td>{{ $product->stock }}</td>
                                     <td>
                                         <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
-                                            onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price2 }})"><i
-                                                class="bi bi-plus"></i></button>
+                                            onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price2 }}, {{ $product->stock }})">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -73,7 +77,7 @@
                             <thead class="table-dark">
                                 <tr>
                                     <th>Produk</th>
-                                    <th>Jumlah</th>
+                                    <th>Stok</th>
                                     <th>Subtotal</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -143,7 +147,8 @@
                     </div>
                 </div>
                 <div class="mb-3">
-                    <button type="submit" class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">Simpan</button>
+                    <button type="submit"
+                        class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">Simpan</button>
                 </div>
             </form>
         </div>
@@ -154,28 +159,47 @@
 @push('scripts')
     <script>
         let invoice = {};
+        let productStocks = {};
 
-        function addToInvoice(id, name, price) {
+        document.querySelectorAll("#product-table-body tr").forEach(row => {
+            const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
+            const stock = parseInt(row.cells[2].innerText);
+            productStocks[id] = stock;
+        });
+
+        function addToInvoice(id, name, price, stock) {
             if (invoice[id]) {
-                invoice[id].qty += 1;
+                if (invoice[id].qty < invoice[id].stock) {
+                    invoice[id].qty += 1;
+                    productStocks[id] -= 1;
+                } else {
+                    alert("Stok produk sudah maksimal.");
+                    return;
+                }
             } else {
                 invoice[id] = {
                     name,
                     price,
-                    qty: 1
+                    qty: 1,
+                    stock: stock
                 };
+                productStocks[id] -= 1;
             }
             renderInvoice();
+            updateProductTable();
         }
 
         function removeFromInvoice(id) {
             if (invoice[id]) {
                 invoice[id].qty -= 1;
+                productStocks[id] += 1;
+
                 if (invoice[id].qty <= 0) {
                     delete invoice[id];
                 }
+                renderInvoice();
+                updateProductTable();
             }
-            renderInvoice();
         }
 
         function renderInvoice() {
@@ -190,7 +214,7 @@
                 body += `
                     <tr>
                         <td>${item.name}</td>
-                        <td><input type="number" value="${item.qty}" class="w-10 bg-gray-100 text-center" onchange="changeQty('${id}', this.value)"></td>
+                        <td><input type="number" value="${item.qty}" max="${item.stock}" class="w-10 bg-gray-100 text-center" onchange="changeQty('${id}', this.value)"></td>
                         <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
                         <td>
                             <button class="btn btn-sm bg-red-800 text-white hover:bg-red-400 hover:text-black" onclick="removeFromInvoice('${id}')"><i class="bi bi-dash"></i></button>
@@ -219,19 +243,53 @@
             };
             document.getElementById('json').value = JSON.stringify(jsonOutput);
         }
-
-
-
+        updateProductTable();
 
         function changeQty(id, qty) {
             qty = parseInt(qty);
+            if (qty > invoice[id].stock) {
+                alert(`Jumlah melebihi stok maksimal (${invoice[id].stock})`);
+                renderInvoice();
+                return;
+            }
+
             if (qty > 0) {
-                invoice[id].qty = qty;
+                const diff = qty - invoice[id].qty;
+                if (diff > 0 && diff <= productStocks[id]) {
+                    invoice[id].qty = qty;
+                    productStocks[id] -= diff;
+                } else if (diff < 0) {
+                    invoice[id].qty = qty;
+                    productStocks[id] += Math.abs(diff);
+                } else if (diff > productStocks[id]) {
+                    alert(`Stok tidak cukup. Sisa stok: ${productStocks[id]}`);
+                    renderInvoice();
+                    return;
+                }
             } else {
+                productStocks[id] += invoice[id].qty;
                 delete invoice[id];
             }
+
             renderInvoice();
+            updateProductTable();
         }
+
+
+
+        function updateProductTable() {
+            document.querySelectorAll("#product-table-body tr").forEach(row => {
+                const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
+                const stockCell = row.cells[2];
+                const stock = productStocks[id];
+
+                stockCell.innerText = stock;
+
+                row.style.display = stock <= 0 ? 'none' : '';
+            });
+        }
+
+
 
 
         document.addEventListener("DOMContentLoaded", function() {

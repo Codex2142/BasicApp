@@ -26,11 +26,11 @@ class DashboardController extends Controller
         $monthInd = WebHelper::getCurrentMonth();
 
         // Mendapatkan semua produk
-        $table = 'Products';
+        $table = 'products';
         $data = CrudHelper::table($table);
         $product = CrudHelper::masterShowData($table, $data);
 
-        // Mendapatkan semua transaksi yang sudah selesai di bulan N
+        // Mendapatkan semua Kiriman yang sudah selesai di bulan N
         $transaction = Transaction::whereMonth('tanggal', $month)
             ->whereYear('tanggal', $year)
             ->where('status', 'done')

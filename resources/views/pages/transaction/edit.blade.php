@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Transaksi - Edit')
+@section('title', 'Kiriman - Edit')
 
 @section('content')
     <div class="container mt-4">
@@ -19,9 +19,9 @@
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
             <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
-                <a href="/transaksi">Kembali</a>
+                <a href="/Kiriman">Kembali</a>
             </div>
-            <span class="md:mx-40 mr-10 fw-bold">{{ $transaction->status == 'done' ? 'Detail' : 'Edit' }} Transaksi</span>
+            <span class="md:mx-40 mr-10 fw-bold">{{ $transaction->status == 'done' ? 'Detail' : 'Edit' }} Kiriman</span>
         </div>
 
         <div class="container shadow p-3 bg-white mb-3 rounded-lg">
@@ -32,7 +32,8 @@
                             <input id="searchInput" type="text" class="form-control" placeholder="Cari Produk"
                                 aria-label="Pencarian">
                             <div class="input-group-append">
-                                <span id="searchDelete" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
+                                <span id="searchDelete"
+                                    class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black from-group-view">X</span>
                             </div>
                         </div>
                     </div>
@@ -48,16 +49,19 @@
                                 <tr>
                                     <th>Nama</th>
                                     <th>Harga</th>
+                                    <th>Stok</th>
                                     <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody id="product-table-body">
                                 @foreach ($products as $product)
-                                    <tr>
+                                    <tr data-product-id="{{ $product->id }}">
                                         <td>{{ $product->name }}</td>
                                         <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
+                                        <td>{{ $product->stock }}</td>
                                         <td>
-                                            <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
+                                            <button
+                                                class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
                                                 onclick="addToInvoice({{ $product->id }}, '{{ addslashes($product->name) }}', {{ $product->price2 }})">
                                                 <i class="bi bi-plus"></i>
                                             </button>
@@ -98,7 +102,7 @@
         {{-- FORM PENGISIAN --}}
         <div class="container shadow p-3 bg-white mb-3 rounded-lg">
             <form action="{{ route('transaction.update', $transaction->id) }}" method="POST" enctype="multipart/form-data"
-                id="transaksiForm">
+                id="KirimanForm">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -122,6 +126,7 @@
                             value="{{ old('product', $transaction->product) }}">
 
                         <input type="hidden" id="status" name="status" value="pending">
+                        <input type="hidden" name="updated_stocks" id="updatedStocks" value="">
                     </div>
 
                     <div class="col">
@@ -141,9 +146,12 @@
 
                 @if ($transaction->status != 'done')
                     <div class="mb-3 d-flex justify-between gap-2">
-                        <button type="submit" class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">SIMPAN SEMENTARA</button>
+                        <button type="submit"
+                            class="btn bg-blue-900 text-white hover:bg-blue-400 hover:text-black px-4 py-2 rounded">SIMPAN
+                            SEMENTARA</button>
                         @if (Auth::user()->role === 'admin')
-                            <button type="button" id="btnSelesai" class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black	 px-4 py-2 rounded">SIMPAN
+                            <button type="button" id="btnSelesai"
+                                class="btn bg-red-800 text-white hover:bg-red-400 hover:text-black	 px-4 py-2 rounded">SIMPAN
                                 PERMANEN</button>
                         @endif
                     </div>
@@ -157,10 +165,63 @@
 
 @push('scripts')
     <script>
+        const productStokMap = @json($products->pluck('stok', 'id'));
         const transactionStatus = "{{ $transaction->status }}";
         let invoice = {};
+        let stockChanges = {};
+
+
+        function updateStockHiddenField() {
+            const stocksArray = Object.values(stockChanges);
+            try {
+                const jsonString = JSON.stringify(stocksArray);
+                document.getElementById('updatedStocks').value = jsonString;
+                console.log("Updated stocks:", jsonString); // Untuk debugging
+            } catch (e) {
+                console.error("Error serializing stock data:", e);
+            }
+        }
+
+        function updateProductStock(id, change) {
+            const rows = document.querySelectorAll("#product-table tbody tr");
+            rows.forEach(row => {
+                if (row.getAttribute('data-product-id') == id) {
+                    const stokCell = row.cells[2];
+                    let currentStock = parseInt(stokCell.textContent);
+                    const newStock = currentStock + change;
+
+                    stokCell.textContent = newStock;
+
+                    // Simpan perubahan stok
+                    if (!stockChanges[id]) {
+                        stockChanges[id] = {
+                            id: id,
+                            initialStock: currentStock - change, // Stok awal sebelum perubahan
+                            updatedStock: newStock
+                        };
+                    } else {
+                        stockChanges[id].updatedStock = newStock;
+                    }
+
+                    // Update hidden form
+                    document.getElementById('updatedStocks').value = JSON.stringify(Object.values(stockChanges));
+
+                    // Update stok di objek invoice (jika ada)
+                    if (invoice[id]) {
+                        invoice[id].stok = newStock;
+                    }
+                }
+            });
+        }
 
         function addToInvoice(id, name, price) {
+            const currentStock = getCurrentStockFromTable(id);
+
+            if (currentStock <= 0) {
+                alert(`Stok ${name} kosong.`);
+                return;
+            }
+
             if (invoice[id]) {
                 invoice[id].qty += 1;
             } else {
@@ -168,26 +229,79 @@
                     id,
                     name,
                     price,
-                    qty: 1
+                    qty: 1,
+                    stok: currentStock
                 };
             }
+
+            updateProductStock(id, -1);
             renderInvoice();
         }
+
+        function getCurrentStockFromTable(id) {
+            const rows = document.querySelectorAll("#product-table tbody tr");
+            for (const row of rows) {
+                // Asumsikan kolom nama ada di sel pertama (index 0)
+                if (row.getAttribute('data-product-id') == id) {
+                    // Asumsikan kolom stok ada di sel ketiga (index 2)
+                    return parseInt(row.cells[2].textContent);
+                }
+            }
+            return 0;
+        }
+
+        // function updateProductStock(id, change) {
+        //     // Cari baris produk di tabel
+        //     const rows = document.querySelectorAll("#product-table tbody tr");
+        //     rows.forEach(row => {
+        //         if (row.cells[0].textContent === invoice[id]?.name) {
+        //             const stokCell = row.cells[2];
+        //             let currentStock = parseInt(stokCell.textContent);
+        //             stokCell.textContent = currentStock + change;
+
+        //             // Update juga stok di objek produk jika diperlukan
+        //             if (invoice[id]) {
+        //                 invoice[id].stok += change;
+        //             }
+        //         }
+        //     });
+        // }
+
 
         function removeFromInvoice(id) {
             if (invoice[id]) {
                 invoice[id].qty -= 1;
-                if (invoice[id].qty <= 0) delete invoice[id];
+                updateProductStock(id, 1);
+
+                if (invoice[id].qty <= 0) {
+                    delete invoice[id];
+                }
+                renderInvoice();
             }
-            renderInvoice();
         }
 
         function changeQty(id, qty) {
             qty = parseInt(qty);
-            if (qty > 0) invoice[id].qty = qty;
-            else delete invoice[id];
+            if (qty <= 0) {
+                // Kembalikan semua stok jika dihapus
+                updateProductStock(id, invoice[id].qty);
+                delete invoice[id];
+            } else {
+                const currentStock = getCurrentStockFromTable(id);
+                const requestedQty = qty - (invoice[id]?.qty || 0);
+
+                if (requestedQty > currentStock) {
+                    alert(`Stok tidak mencukupi. Hanya tersedia ${currentStock}`);
+                    return;
+                }
+
+                // Update stok di tabel produk
+                updateProductStock(id, -requestedQty);
+                invoice[id].qty = qty;
+            }
             renderInvoice();
         }
+
 
         function renderInvoice() {
             let body = '';
@@ -210,10 +324,10 @@
                     </td>
                     <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
                     ${transactionStatus !== 'done' ? `
-                                                                <td>
-                                                                    <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button>
-                                                                </td>
-                                                            ` : ''}
+                    <td>
+                        <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button>
+                    </td>
+                ` : ''}
                 </tr>
             `;
             }
@@ -292,9 +406,11 @@
                                 id: item.id,
                                 name: item.name,
                                 price: item.price,
-                                qty: item.qty
+                                qty: item.qty,
+                                stok: productStokMap[item.id] ?? 9999
                             };
                         });
+                        renderInvoice();
                     } else {
                         invoice = {};
                     }
@@ -315,7 +431,7 @@
             // Konfirmasi simpan permanen dari modal
             document.getElementById('confirmSaveBtn')?.addEventListener('click', function() {
                 document.getElementById('status').value = 'done';
-                document.getElementById('transaksiForm').submit();
+                document.getElementById('KirimanForm').submit();
             });
 
             // Objek datedisabled menjadi array

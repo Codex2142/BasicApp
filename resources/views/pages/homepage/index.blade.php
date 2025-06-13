@@ -66,7 +66,7 @@
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="">Toko Zakiah</a>
+            <a class="navbar-brand" href="{{ Auth::user() ? '/Beranda' : '/login' }}">Toko Zakiah</a>
         </div>
     </nav>
 

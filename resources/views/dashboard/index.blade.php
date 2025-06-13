@@ -48,10 +48,10 @@
                 </div>
             </div>
 
-            {{-- TRANSAKSI --}}
+            {{-- Kiriman --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                 <div class="card border-0 text-center shadow">
-                    <div class="card-header border-0 fw-bold  bg-slate-500 text-white">TRANSAKSI
+                    <div class="card-header border-0 fw-bold  bg-slate-500 text-white">KIRIMAN
                         {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}</div>
                     <div class="card-body d-flex flex-wrap align-items-center justify-content-around">
                         <div class="icon-dashboard">

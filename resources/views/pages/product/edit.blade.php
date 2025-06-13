@@ -107,10 +107,22 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="col-md-6">
+                        <!-- Stock -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'number',
+                                    'label' => 'Stok',
+                                    'name' => 'stock',
+                                    'place' => '',
+                                    'value' => old('stock', $data[0]->stock ?? ''),
+                                ])
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
-
 
                 <!-- Deskripsi -->
                 <div class="mb-3 mt-4">

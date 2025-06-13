@@ -13,13 +13,13 @@ use App\Rules\dataValidator;
 class TransactionController extends Controller
 {
 
-    // menuju halaman utama transaksi
+    // menuju halaman utama Kiriman
     public function index()
     {
         return view('pages.transaction.view');
     }
 
-    // menuju halaman tambah transaksi
+    // menuju halaman tambah Kiriman
     public function create()
     {
         $dateDisabled = Transaction::get()->pluck('tanggal')->toArray();
@@ -27,7 +27,7 @@ class TransactionController extends Controller
         return view('pages.transaction.add', compact('result', 'dateDisabled'));
     }
 
-    // proses penambahan transaksi
+    // proses penambahan Kiriman
     public function store(Request $request)
     {
         // pengecualian input dari $request
@@ -39,18 +39,25 @@ class TransactionController extends Controller
             $input['photo'] = $request->file('photo')->store('images', 'public');
         }
 
-        // proses penambahan transaksi
+        // proses penambahan Kiriman
         $table = 'transactions';
         $config = CrudHelper::table($table);
         $result = CrudHelper::masterInsertData($table, $config, $input);
 
         // jika terdapat error
         if (isset($result['error'])) {
-            return redirect('/transaksi/tambah')->withErrors($result['error']);
+            return redirect('/Kiriman/tambah')->withErrors($result['error']);
+        }
+
+        // Validasi stock produk
+        $product = Product::get()->toArray();
+        $isValid = dataValidator::stockValidator($input['product'], $product, 'add');
+        if(!$isValid){
+            return redirect()->back()->withErrors('Stock tidak cukup!');
         }
 
         // jika berhasil
-        return redirect('/transaksi')->with('success', 'Berhasil Menyimpan Data');
+        return redirect('/Kiriman')->with('success', 'Berhasil Menyimpan Data');
     }
 
     // menuju halaman edit
@@ -71,11 +78,15 @@ class TransactionController extends Controller
         return view('pages.transaction.edit', compact('transaction', 'products', 'dateDisabled'));
     }
 
-    // proses update transaksi
+    // proses update Kiriman
     public function update(Request $request, string $id)
     {
+        // Validasi stock produk (1)
+        $product = Product::get()->toArray();
+        $isValid = $request['updated_stocks'];
+
         // pengecualian input dari $request
-        $input = Arr::except($request->all(), ['_token', 'photo','_method']);
+        $input = Arr::except($request->all(), ['_token', 'photo','_method', 'updated_stocks']);
 
         $productJson = $request->input('product');
         if (dataValidator::isEmptyJson($productJson)) {
@@ -98,27 +109,40 @@ class TransactionController extends Controller
         // proses update
         $result = CrudHelper::masterUpdateData($table, $data, $input, $id);
 
+        // Validasi stock produk (2)
+        $isValid = dataValidator::stockValidator($request['updated_stocks'], $product, 'edit');
+        if(!$isValid){
+            return redirect()->back()->withErrors('Stock tidak cukup!');
+        }
+
         // jika gagal
         if (isset($result['error'])) {
             return back()->withErrors($result['error']);
         }
 
         // jika berhasil
-        return redirect('/transaksi')->with('success', 'Berhasil Mengubah Data');
+        return redirect('/Kiriman')->with('success', 'Berhasil Mengubah Data');
     }
 
-    // mengahpus transaksi
+    // mengahpus Kiriman
     public function destroy(string $id)
     {
 
-        // Transaksi done tapi ingin dihapus
+        // Kiriman done tapi ingin dihapus
         $transaction = Transaction::findOrFail($id);
         if ($transaction->status === 'done') {
-            return redirect()->back()->withErrors('Tidak dapat menghapus transaksi yang sudah selesai.');
+            return redirect()->back()->withErrors('Tidak dapat menghapus Kiriman yang sudah selesai.');
+        }
+
+        // Validasi stock produk (2)
+        $product = Product::get()->toArray();
+        $isValid = dataValidator::stockValidator($id, $product, 'delete');
+        if(!$isValid){
+            return redirect()->back()->withErrors('Stock tidak cukup!');
         }
 
         $table = 'transactions';
         $result = CrudHelper::masterDeleteData($table, $id);
-        return  redirect('/transaksi')->with('success', 'Berhasil Menghapus Data');
+        return  redirect('/Kiriman')->with('success', 'Berhasil Menghapus Data');
     }
 }

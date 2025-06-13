@@ -44,19 +44,19 @@ Breadcrumbs::for('ProductEdit', function (BreadcrumbTrail $trail, $data) {
 });
 
 
-// Transaksi
+// Kiriman
 Breadcrumbs::for('Transaction', function (BreadcrumbTrail $trail) {
     $trail->parent('Beranda');
-    $trail->push('Transaksi', route('transaction.index'));
+    $trail->push('Kiriman', route('transaction.index'));
 });
 
-// Transaksi > Add
+// Kiriman > Add
 Breadcrumbs::for('TransactionAdd', function (BreadcrumbTrail $trail) {
     $trail->parent('Transaction');
     $trail->push('Tambah');
 });
 
-// Transaksi > Edit
+// Kiriman > Edit
 Breadcrumbs::for('TransactionEdit', function (BreadcrumbTrail $trail, $transaction) {
     $trail->parent('Transaction');
     $trail->push('Edit');

@@ -61,7 +61,7 @@
                     </div>
 
                     <div class="col-md-6">
-                        <!-- Harga Beli -->
+                        <!-- Harga Pasar -->
                         <div class="mb-3">
                             <div class="mb-3">
                                 @include('components.form', [
@@ -75,7 +75,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <!-- Harga Beli -->
+                        <!-- Harga Grosir -->
                         <div class="mb-3">
                             <div class="mb-3">
                                 @include('components.form', [
@@ -83,6 +83,21 @@
                                     'label' => 'Harga Grosir',
                                     'name' => 'price2',
                                     'place' => 'masukkan Harga',
+                                    'value' => '',
+                                ])
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Stock -->
+                        <div class="mb-3">
+                            <div class="mb-3">
+                                @include('components.form', [
+                                    'type' => 'number',
+                                    'label' => 'Stok',
+                                    'name' => 'stock',
+                                    'place' => 'masukkan stok',
                                     'value' => '',
                                 ])
                             </div>

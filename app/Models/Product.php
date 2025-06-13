@@ -20,6 +20,7 @@ class Product extends Model
         'price1',
         'price2',
         'photo',
+        'stock',
         'description',
     ];
 
@@ -31,6 +32,7 @@ class Product extends Model
             'price1' => 'Harga Pasar',
             'price2' => 'Harga Grosir',
             'photo' => 'Foto',
+            'stock' => 'Stok',
             'description' => 'Deskripsi',
         ];
     }
@@ -41,6 +43,7 @@ class Product extends Model
         'price1' => 'required|integer',
         'price2' => 'required|integer',
         'photo' => 'nullable',
+        'stock' => 'integer|required|min:0',
         'description' => 'nullable|max:255',
     ];
 
@@ -54,6 +57,10 @@ class Product extends Model
 
         'price2.required' => 'Harga Grosir wajib diisi!',
         'price2.integer' => 'Harga Grosir harus berupa angka!',
+
+        'stock.integer' => 'Stok harus berupa angka!',
+        'stock.required' => 'Stok wajib diisi!',
+        'stock.min' => 'Stok minimal 0!',
 
         'description.max' => 'Deskripsi maksimal 255 karakter!',
     ];
