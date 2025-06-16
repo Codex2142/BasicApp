@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('title', 'Kiriman - Edit')
-
+@php
+    // dd($dateDisabled);
+@endphp
 @section('content')
     <div class="container mt-4">
 
@@ -111,7 +113,8 @@
                             <label for="tanggal" class="form-label block mb-1 font-medium">Tanggal</label>
                             <input type="text" id="tanggal" name="tanggal" placeholder=""
                                 value="{{ old('tanggal', $transaction->tanggal) }}"
-                                class="form-control border rounded p-2 w-full" />
+                                class="form-control border rounded p-2 w-full"
+                                {{ $transaction->status == 'done' ? 'readonly' : '' }} />
                         </div>
 
                         <div class="mb-3">
@@ -165,57 +168,104 @@
 
 @push('scripts')
     <script>
-        const productStokMap = @json($products->pluck('stok', 'id'));
+        // Inisialisasi variabel global
+        const productStokMap = @json($products->pluck('stock', 'id'));
         const transactionStatus = "{{ $transaction->status }}";
         let invoice = {};
         let stockChanges = {};
+        let productStocks = {};
 
+        // Fungsi untuk update tampilan tabel produk
+        function updateProductTable() {
+            document.querySelectorAll("#product-table-body tr").forEach(row => {
+                const id = row.getAttribute('data-product-id');
+                const stockCell = row.cells[2];
 
+                const currentStock = productStocks[id] !== undefined ? productStocks[id] : parseInt(stockCell
+                    .textContent);
+
+                stockCell.textContent = currentStock;
+                row.style.display = currentStock <= 0 ? 'none' : '';
+            });
+        }
+
+        // Fungsi untuk memuat data invoice yang sudah ada - DIPERBAIKI
+        function loadExistingInvoice() {
+            @if ($transaction->product)
+                try {
+                    const invoiceData = JSON.parse(@json($transaction->product));
+                    if (invoiceData && invoiceData.items) {
+                        // Clear existing invoice
+                        invoice = {};
+
+                        // Pertama, inisialisasi semua stok dengan nilai dari database
+                        document.querySelectorAll("#product-table-body tr").forEach(row => {
+                            const id = row.getAttribute('data-product-id');
+                            productStocks[id] = parseInt(row.cells[2].textContent);
+                        });
+
+                        // Kemudian load item yang ada di invoice
+                        invoiceData.items.forEach(item => {
+                            invoice[item.id] = {
+                                id: item.id,
+                                name: item.name,
+                                price: item.price,
+                                qty: item.qty,
+                                stok: productStokMap[item.id] ?? 0
+                            };
+
+                            // Untuk status 'done', tetap tampilkan produk tanpa update stok
+                            if (transactionStatus !== 'done' && productStokMap[item.id] !== undefined) {
+                                // Jangan kurangi stok di sini, karena kita ingin tampilkan stok aktual
+                                // productStocks[item.id] = productStokMap[item.id] - item.qty;
+                            }
+                        });
+
+                        renderInvoice();
+
+                        // Hanya update product table jika status bukan 'done'
+                        if (transactionStatus !== 'done') {
+                            updateProductTable();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error parsing invoice data:', error);
+                }
+            @endif
+        }
+
+        // Fungsi untuk melacak perubahan stok
+        function updateStockChanges(id, initialStock, updatedStock) {
+            if (!stockChanges[id]) {
+                stockChanges[id] = {
+                    id: id,
+                    initialStock: initialStock,
+                    updatedStock: updatedStock
+                };
+            } else {
+                stockChanges[id].updatedStock = updatedStock;
+            }
+            updateStockHiddenField();
+        }
+
+        // Fungsi untuk mengupdate hidden field stok
         function updateStockHiddenField() {
             const stocksArray = Object.values(stockChanges);
             try {
                 const jsonString = JSON.stringify(stocksArray);
                 document.getElementById('updatedStocks').value = jsonString;
-                console.log("Updated stocks:", jsonString); // Untuk debugging
             } catch (e) {
                 console.error("Error serializing stock data:", e);
             }
         }
 
-        function updateProductStock(id, change) {
-            const rows = document.querySelectorAll("#product-table tbody tr");
-            rows.forEach(row => {
-                if (row.getAttribute('data-product-id') == id) {
-                    const stokCell = row.cells[2];
-                    let currentStock = parseInt(stokCell.textContent);
-                    const newStock = currentStock + change;
-
-                    stokCell.textContent = newStock;
-
-                    // Simpan perubahan stok
-                    if (!stockChanges[id]) {
-                        stockChanges[id] = {
-                            id: id,
-                            initialStock: currentStock - change, // Stok awal sebelum perubahan
-                            updatedStock: newStock
-                        };
-                    } else {
-                        stockChanges[id].updatedStock = newStock;
-                    }
-
-                    // Update hidden form
-                    document.getElementById('updatedStocks').value = JSON.stringify(Object.values(stockChanges));
-
-                    // Update stok di objek invoice (jika ada)
-                    if (invoice[id]) {
-                        invoice[id].stok = newStock;
-                    }
-                }
-            });
-        }
-
+        // Fungsi untuk menambahkan produk ke invoice
         function addToInvoice(id, name, price) {
-            const currentStock = getCurrentStockFromTable(id);
+            if (transactionStatus === 'done') return;
+
+            // Ambil stok aktual dari tabel, bukan dari productStocks
+            const currentStock = parseInt(document.querySelector(
+                `#product-table-body tr[data-product-id="${id}"] td:nth-child(3)`).textContent);
 
             if (currentStock <= 0) {
                 alert(`Stok ${name} kosong.`);
@@ -226,52 +276,51 @@
                 invoice[id].qty += 1;
             } else {
                 invoice[id] = {
-                    id,
-                    name,
-                    price,
+                    id: id,
+                    name: name,
+                    price: price,
                     qty: 1,
                     stok: currentStock
                 };
             }
 
-            updateProductStock(id, -1);
+            const newStock = currentStock - 1;
+            updateStockChanges(id, currentStock, newStock);
+            updateProductStockInTable(id, newStock);
             renderInvoice();
         }
 
-        function getCurrentStockFromTable(id) {
-            const rows = document.querySelectorAll("#product-table tbody tr");
-            for (const row of rows) {
-                // Asumsikan kolom nama ada di sel pertama (index 0)
-                if (row.getAttribute('data-product-id') == id) {
-                    // Asumsikan kolom stok ada di sel ketiga (index 2)
-                    return parseInt(row.cells[2].textContent);
-                }
+        // Fungsi pembantu untuk mengupdate stok di tabel
+        function updateProductStockInTable(id, newStock) {
+            if (transactionStatus === 'done') return;
+
+            const row = document.querySelector(`#product-table-body tr[data-product-id="${id}"]`);
+            if (row) {
+                row.cells[2].textContent = newStock;
+                productStocks[id] = newStock;
+
+                // Tampilkan kembali row jika stok > 0
+                row.style.display = newStock <= 0 ? 'none' : '';
             }
-            return 0;
         }
 
-        // function updateProductStock(id, change) {
-        //     // Cari baris produk di tabel
-        //     const rows = document.querySelectorAll("#product-table tbody tr");
-        //     rows.forEach(row => {
-        //         if (row.cells[0].textContent === invoice[id]?.name) {
-        //             const stokCell = row.cells[2];
-        //             let currentStock = parseInt(stokCell.textContent);
-        //             stokCell.textContent = currentStock + change;
 
-        //             // Update juga stok di objek produk jika diperlukan
-        //             if (invoice[id]) {
-        //                 invoice[id].stok += change;
-        //             }
-        //         }
-        //     });
-        // }
-
-
+        // Fungsi untuk menghapus produk dari invoice
         function removeFromInvoice(id) {
+            if (transactionStatus === 'done') return;
+
             if (invoice[id]) {
                 invoice[id].qty -= 1;
-                updateProductStock(id, 1);
+
+                // Dapatkan stok saat ini dari tabel
+                const currentStock = getCurrentStockFromTable(id);
+                const newStock = currentStock + 1;
+
+                // Catat perubahan stok
+                updateStockChanges(id, currentStock, newStock);
+
+                // Update tampilan
+                updateProductStockInTable(id, newStock);
 
                 if (invoice[id].qty <= 0) {
                     delete invoice[id];
@@ -280,29 +329,50 @@
             }
         }
 
+        // Fungsi untuk mengubah quantity
         function changeQty(id, qty) {
+            if (transactionStatus === 'done') return;
+
             qty = parseInt(qty);
+            const currentItem = invoice[id];
+
+            if (!currentItem) return;
+
+            const currentStock = getCurrentStockFromTable(id);
+
             if (qty <= 0) {
-                // Kembalikan semua stok jika dihapus
-                updateProductStock(id, invoice[id].qty);
+                // Kembalikan stok
+                const newStock = currentStock + currentItem.qty;
+                updateStockChanges(id, currentStock, newStock);
+                updateProductStockInTable(id, newStock);
                 delete invoice[id];
             } else {
-                const currentStock = getCurrentStockFromTable(id);
-                const requestedQty = qty - (invoice[id]?.qty || 0);
+                const diff = qty - currentItem.qty;
 
-                if (requestedQty > currentStock) {
+                if (diff > currentStock) {
                     alert(`Stok tidak mencukupi. Hanya tersedia ${currentStock}`);
                     return;
                 }
 
-                // Update stok di tabel produk
-                updateProductStock(id, -requestedQty);
-                invoice[id].qty = qty;
+                const newStock = currentStock - diff;
+                updateStockChanges(id, currentStock, newStock);
+                updateProductStockInTable(id, newStock);
+                currentItem.qty = qty;
             }
+
             renderInvoice();
         }
 
+        // Fungsi untuk mendapatkan stok saat ini dari tabel
+        function getCurrentStockFromTable(id) {
+            const row = document.querySelector(`#product-table-body tr[data-product-id="${id}"]`);
+            if (row) {
+                return parseInt(row.cells[2].textContent);
+            }
+            return 0;
+        }
 
+        // Fungsi untuk render invoice - DIPERBAIKI
         function renderInvoice() {
             let body = '';
             let total = 0;
@@ -313,21 +383,22 @@
             for (const item of items) {
                 let subTotal = item.price * item.qty;
                 total += subTotal;
+
+                // Tampilkan input yang berbeda berdasarkan status
+                const quantityInput = transactionStatus === 'done' ?
+                    `<span>${item.qty}</span>` :
+                    `<input type="number" value="${item.qty}" class="w-10 bg-gray-100 text-center" onchange="changeQty(${item.id}, this.value)">`;
+
+                const actionButton = transactionStatus !== 'done' ?
+                    `<td><button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button></td>` :
+                    '';
+
                 body += `
                 <tr>
                     <td>${item.name}</td>
-                    <td>
-                        <input type="number" ${transactionStatus !== 'done' ? '' : 'readonly'}
-                            value="${item.qty}"
-                            class="w-10 bg-gray-100 text-center"
-                            onchange="changeQty(${item.id}, this.value)">
-                    </td>
+                    <td>${quantityInput}</td>
                     <td>Rp ${subTotal.toLocaleString('id-ID')}</td>
-                    ${transactionStatus !== 'done' ? `
-                    <td>
-                        <button class="btn btn-sm btn-danger" onclick="removeFromInvoice(${item.id})"><i class="bi bi-dash"></i></button>
-                    </td>
-                ` : ''}
+                    ${actionButton}
                 </tr>
             `;
             }
@@ -337,7 +408,6 @@
             document.getElementById('total-bayar-final').value = total;
 
             // Update JSON produk di hidden input
-            // Format harus sama seperti semula: { items: [...] }
             const jsonItems = items.map(item => ({
                 id: item.id,
                 qty: item.qty,
@@ -345,25 +415,58 @@
                 price: item.price,
                 subtotal: item.price * item.qty
             }));
-            const jsonData = {
+
+            document.getElementById('json').value = JSON.stringify({
                 items: jsonItems,
                 total: total
-            };
-            document.getElementById('json').value = JSON.stringify(jsonData);
+            });
         }
 
+        // Initialize when DOM is loaded
         document.addEventListener("DOMContentLoaded", function() {
-            // Search produk
+            const productStocks = {};
+            const rowsPerPage = 10;
+            let currentPage = 1;
+            const paginationContainer = document.createElement('div');
+            paginationContainer.classList.add('mt-3', 'd-flex', 'justify-content-start');
+
+            const allRows = Array.from(document.querySelectorAll("#product-table-body tr"));
+
+            // Inisialisasi stok dan sembunyikan yang <= 0
+            allRows.forEach(row => {
+                const id = row.getAttribute('data-product-id');
+                const stok = parseInt(row.cells[2].textContent);
+
+                if (stok <= 0) {
+                    row.classList.add('hide-stock');
+                    row.style.display = 'none';
+                }
+
+                productStocks[id] = stok;
+            });
+
+            // Load invoice lama
+            loadExistingInvoice?.();
+
+            // Pencarian dengan debounce
             const input = document.getElementById("searchInput");
             const clearBtn = document.getElementById("searchDelete");
-            const rows = document.querySelectorAll("#product-table tbody tr");
+            let debounceTimer;
 
             input?.addEventListener("keyup", function() {
-                const keyword = input.value.toLowerCase();
-                rows.forEach(row => {
-                    const nama = row.cells[0].textContent.toLowerCase();
-                    row.style.display = nama.includes(keyword) ? "" : "none";
-                });
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => {
+                    const keyword = input.value.toLowerCase();
+                    allRows.forEach(row => {
+                        const nama = row.cells[0].textContent.toLowerCase();
+                        if (nama.includes(keyword)) {
+                            row.classList.remove('hide-search');
+                        } else {
+                            row.classList.add('hide-search');
+                        }
+                    });
+                    updatePaginationDisplay();
+                }, 300);
             });
 
             clearBtn?.addEventListener("click", function() {
@@ -371,117 +474,116 @@
                 input.dispatchEvent(new Event('keyup'));
             });
 
-            // Pagination produk
-            const allRows = Array.from(document.querySelectorAll("#product-table-body tr"));
-            const rowsPerPage = 10;
-            const pagination = document.getElementById('pagination');
-            let currentPage = 1;
+            function getVisibleRows() {
+                return allRows.filter(row =>
+                    !row.classList.contains('hide-stock') &&
+                    !row.classList.contains('hide-search')
+                );
+            }
 
-            function showPage(page) {
-                const start = (page - 1) * rowsPerPage;
+            function renderPagination(totalPages) {
+                paginationContainer.innerHTML = '';
+                for (let i = 1; i <= totalPages; i++) {
+                    const btn = document.createElement('button');
+                    btn.className = 'btn btn-sm btn-outline-primary mx-1 mb-3';
+                    btn.innerText = i;
+
+                    btn.addEventListener('click', () => {
+                        currentPage = i;
+                        displayRows();
+                    });
+                    paginationContainer.appendChild(btn);
+                }
+                document.getElementById('product-table').after(paginationContainer);
+            }
+
+            function displayRows() {
+                const visibleRows = getVisibleRows();
+                const start = (currentPage - 1) * rowsPerPage;
                 const end = start + rowsPerPage;
-                allRows.forEach((row, idx) => {
-                    row.style.display = idx >= start && idx < end ? '' : 'none';
+
+                allRows.forEach(row => row.style.display = 'none');
+                visibleRows.forEach((row, index) => {
+                    if (index >= start && index < end) {
+                        row.style.display = '';
+                    }
                 });
             }
 
-            if (allRows.length > rowsPerPage) {
-                // Buat pagination jika diperlukan (opsional)
-            } else {
-                showPage(1);
-            }
+            function updatePaginationDisplay() {
+                const visibleRows = getVisibleRows();
+                const totalPages = Math.ceil(visibleRows.length / rowsPerPage);
 
-            // Load data lama (old) dari input hidden product JSON
-            const oldJson = document.getElementById('json').value;
-            if (oldJson) {
-                try {
-                    const oldInvoiceData = JSON.parse(oldJson);
-
-                    // Pastikan oldInvoiceData punya properti items berupa array
-                    if (oldInvoiceData && Array.isArray(oldInvoiceData.items)) {
-                        // Buat invoice object keyed by id
-                        invoice = {};
-                        oldInvoiceData.items.forEach(item => {
-                            invoice[item.id] = {
-                                id: item.id,
-                                name: item.name,
-                                price: item.price,
-                                qty: item.qty,
-                                stok: productStokMap[item.id] ?? 9999
-                            };
-                        });
-                        renderInvoice();
-                    } else {
-                        invoice = {};
+                if (visibleRows.length > rowsPerPage) {
+                    if (!document.contains(paginationContainer)) {
+                        renderPagination(totalPages);
                     }
-                } catch (error) {
-                    console.error('JSON produk lama tidak valid:', error);
-                    invoice = {};
+                    displayRows();
+                } else {
+                    if (document.contains(paginationContainer)) {
+                        paginationContainer.remove();
+                    }
+                    allRows.forEach(row => {
+                        if (!row.classList.contains('hide-stock') &&
+                            !row.classList.contains('hide-search')) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
                 }
             }
 
-            renderInvoice();
+            updatePaginationDisplay();
 
-            // Button simpan permanen
-            btnSelesai?.addEventListener('click', function() {
-                const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
-                modal.show();
-            });
-
-            // Konfirmasi simpan permanen dari modal
-            document.getElementById('confirmSaveBtn')?.addEventListener('click', function() {
-                document.getElementById('status').value = 'done';
-                document.getElementById('KirimanForm').submit();
-            });
-
-            // Objek datedisabled menjadi array
+            // Flatpickr
             const dateDisabledRaw = @json($dateDisabled);
             let dateDisabled = Object.values(dateDisabledRaw);
-
             const elemenTanggal = document.querySelector("#tanggal");
-            console.log("Elemen tanggal:", elemenTanggal);
             if (elemenTanggal) {
-                flatpickr(elemenTanggal, {
+                const isReadonly = "{{ $transaction->status }}" === 'done';
+                const flatpickrConfig = {
                     locale: 'id',
-                    disable: dateDisabled,
                     dateFormat: "Y-m-d",
                     altInput: true,
-                    altFormat: "F j, Y",
+                    altFormat: "j F Y",
+                    disable: dateDisabled,
                     defaultDate: elemenTanggal.value || "today",
-                });
-            } else {
-                console.warn("Elemen #tanggal tidak ditemukan.");
+                    clickOpens: !isReadonly,
+                    allowInput: !isReadonly,
+                    disableMobile: true
+                };
+                const fp = flatpickr(elemenTanggal, flatpickrConfig);
+                if (isReadonly) {
+                    fp.close();
+                    elemenTanggal.style.backgroundColor = '#f8f9fa';
+                    elemenTanggal.readOnly = true;
+                    elemenTanggal.classList.add('bg-light');
+                }
             }
-        });
 
-        document.addEventListener("DOMContentLoaded", function() {
+            // Counter Deskripsi
             const deskripsiTextarea = document.querySelector('textarea[name="description"]');
             const charCount = document.getElementById('wordCountInfo');
             const maxChar = 30;
 
             if (deskripsiTextarea && charCount) {
-                function updateCharCount() {
-                    let length = deskripsiTextarea.value.length;
-
+                deskripsiTextarea.addEventListener('input', function() {
+                    let length = this.value.length;
                     if (length > maxChar) {
-                        deskripsiTextarea.value = deskripsiTextarea.value.slice(0, maxChar);
+                        this.value = this.value.slice(0, maxChar);
                         length = maxChar;
                     }
-
                     charCount.textContent = `${length} / ${maxChar} karakter`;
-
-                    if (length === maxChar) {
-                        charCount.classList.add('text-danger');
-                    } else {
-                        charCount.classList.remove('text-danger');
-                    }
-                }
-
-                deskripsiTextarea.addEventListener('input', updateCharCount);
-
-                // Panggil sekali saat pertama kali halaman dibuka
-                updateCharCount();
+                    charCount.classList.toggle('text-danger', length === maxChar);
+                });
             }
+
+            // Simpan selesai
+            document.getElementById('btnSelesai')?.addEventListener('click', function() {
+                document.getElementById('status').value = 'done';
+                document.getElementById('KirimanForm').submit();
+            });
         });
     </script>
 @endpush

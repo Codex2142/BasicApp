@@ -18,6 +18,15 @@
                     <i class="bi bi-cup-straw"></i> Produk
                 </a>
             </li>
+
+            <div class="border-t border-gray-300 mt-4"></div>
+
+            <li class="nav-item">
+                <a class="nav-link {{ request()->is('pembelian*') ? 'navbar-active' : '' }}" href="/pembelian">
+                    <i class="bi bi-bag"></i> Pembelian
+                </a>
+            </li>
+
             <li class="nav-item">
                 <a class="nav-link {{ request()->is('Kiriman*') ? 'navbar-active' : '' }}" href="/Kiriman">
                     <div class="d-flex justify-content-between align-items-center" style="width: 100%;">
@@ -32,14 +41,9 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link {{ request()->is('kalkulator*') ? 'navbar-active' : '' }}" href="/kalkulator">
-                    <i class="bi bi-calculator"></i> Kalkulator
-                </a>
-            </li>
-
             @auth
                 @if (Auth::user()->role === 'admin')
+                    <div class="border-t border-gray-300 mt-4"></div>
                     <li class="nav-item">
                         <a class="nav-link {{ request()->is('user*') ? 'navbar-active' : '' }}" href="/user">
                             <i class="bi bi-people"></i> Pengguna
@@ -55,6 +59,7 @@
             @endauth
 
 
+            {{-- Separator --}}
             <div class="border-t border-gray-300 mt-4"></div>
 
             <li class="nav-item">

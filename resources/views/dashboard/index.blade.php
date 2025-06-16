@@ -101,11 +101,17 @@
 
             {{-- CHART KECIL --}}
             <div class="col-12 col-sm-6 col-md-6 col-lg-4">
-                <div class="card border-0 text-center shadow">
-                    <div class="card-header border-0 fw-bold bg-green-200">BELUM DIISI</div>
-                    <div class="card-body d-flex flex-wrap align-items-center justify-content-around ">
-                        <div style="overflow-x: auto;">
-
+                <div class="card border-0 text-center shadow h-100"> <!-- Tambah h-100 -->
+                    <div class="card-header border-0 fw-bold bg-slate-100">
+                        10 PRODUK TERLARIS
+                        {{ strtoupper(Carbon::create()->month($month)->locale('id')->translatedFormat('F')) }}
+                    </div>
+                    <div class="card-body p-0 d-flex flex-column"> <!-- Modifikasi disini -->
+                        <div class="flex-grow-1" style="min-height: 200px;">
+                            {!! $chart2->container() !!}
+                        </div>
+                        <div class="chart-legend mt-auto px-3 pb-3">
+                            <!-- Legend akan otomatis muncul di sini -->
                         </div>
                     </div>
                 </div>
@@ -118,4 +124,6 @@
 @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     {!! $chart->script() !!}
+    {!! $chart2->script() !!}
+
 @endpush

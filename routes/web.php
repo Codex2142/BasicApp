@@ -1,14 +1,15 @@
 <?php
 
-use App\Http\Controllers\AuthController;
+use App\Providers\WebHelper;
 use App\Providers\CrudHelper;
 use Illuminate\Support\Facades\Route;
+use Spatie\Activitylog\Models\Activity;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
-use App\Http\Controllers\UserController;
-use App\Providers\WebHelper;
-use Spatie\Activitylog\Models\Activity;
 
 // ADMIN ROLE
 Route::middleware(['auth', 'role:admin'])->group(function () {
@@ -40,11 +41,18 @@ Route::middleware(['auth', 'role:admin,user'])->group(function () {
     Route::delete('/produk/{id}', [ProductController::class, 'destroy'])->name('product.destroy');
 
     Route::get('/Kiriman', [TransactionController::class, 'index'])->name('transaction.index');
-    Route::get('/Kiriman/tambah', [TransactionController::class, 'create'])->name('transaction.create');
+    Route::get('/Kiriman/tambah/', [TransactionController::class, 'create'])->name('transaction.create');
     route::post('/Kiriman/tambah', [TransactionController::class, 'store'])->name('transaction.store');
     Route::get('/Kiriman/update/{id}', [TransactionController::class, 'edit'])->name('transaction.edit');
     route::put('/Kiriman/update/{id}', [TransactionController::class, 'update'])->name('transaction.update');
     Route::get('/Kiriman/{id}', [TransactionController::class, 'destroy'])->name('transaction.destroy');
+
+    Route::get('/pembelian', [InvoiceController::class, 'index'])->name('invoice.index');
+    Route::get('/pembelian/tambah/{type}', [InvoiceController::class, 'create'])->name('invoice.create');
+    route::post('/pembelian/tambah', [InvoiceController::class, 'store'])->name('invoice.store');
+    Route::get('/pembelian/update/{id}', [InvoiceController::class, 'edit'])->name('invoice.edit');
+    route::put('/pembelian/update/{id}', [InvoiceController::class, 'update'])->name('invoice.update');
+    Route::delete('/pembelian/{id}', [InvoiceController::class, 'destroy'])->name('invoice.destroy');
 
     Route::get('kalkulator', function () {
         $table = 'Products';

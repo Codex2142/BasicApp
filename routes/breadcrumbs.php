@@ -63,6 +63,25 @@ Breadcrumbs::for('TransactionEdit', function (BreadcrumbTrail $trail, $transacti
     $trail->push($transaction->date);
 });
 
+// Pembelian
+Breadcrumbs::for('Pembelian', function (BreadcrumbTrail $trail) {
+    $trail->parent('Beranda');
+    $trail->push('Pembelian', route('invoice.index'));
+});
+
+// Pembelian > Add
+Breadcrumbs::for('PembelianAdd', function (BreadcrumbTrail $trail) {
+    $trail->parent('Pembelian');
+    $trail->push('Tambah');
+});
+
+// Pembelian > Edit
+Breadcrumbs::for('PembelianEdit', function (BreadcrumbTrail $trail, $id) {
+    $trail->parent('Pembelian');
+    $trail->push('Edit');
+    $trail->push($id);
+});
+
 // User
 Breadcrumbs::for('User', function (BreadcrumbTrail $trail) {
     $trail->parent('Beranda');

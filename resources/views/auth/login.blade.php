@@ -6,8 +6,8 @@
     <div class="min-h-screen flex items-center justify-center bg-gray-100">
         <div class="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
             <div class="text-center">
-                <span class="inline-block rounded-full overflow-hidden w-64 h-64 shadow-lg ring-2 ring-gray-300">
-                    <img src="{{ asset('images/Skirknamecard.jpg') }}" class="w-full h-full object-cover" />
+                <span class="inline-block rounded-2xl overflow-hidden w-64 h-64 shadow">
+                    <img src="{{ asset('images/loginpage.jpg') }}" class="w-full h-full object-cover" />
                 </span>
                 <h1 class="text-3xl font-bold text-gray-900 mt-4">Toko Zakiah</h1>
             </div>

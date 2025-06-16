@@ -31,11 +31,7 @@ class DashboardController extends Controller
         $product = CrudHelper::masterShowData($table, $data);
 
         // Mendapatkan semua Kiriman yang sudah selesai di bulan N
-        $transaction = Transaction::whereMonth('tanggal', $month)
-            ->whereYear('tanggal', $year)
-            ->where('status', 'done')
-            ->orderBy('tanggal')
-            ->get();
+        $transaction = Transaction::whereMonth('tanggal', $month)->whereYear('tanggal', $year)->where('status', 'done')->orderBy('tanggal')->get();
 
         // Mendapatkan total User
         $users = User::get();
@@ -60,18 +56,38 @@ class DashboardController extends Controller
             ->setXAxis($labels)
             ->setHeight(400);
 
+        $topProducts = WebHelper::summaryProduct($year, $month);
+
+        // Siapkan data untuk chart
+        $productNames = array_column($topProducts['products'], 'name');
+        $productQuantities = array_column($topProducts['products'], 'qty');
+
+        $productLabels = array_map(
+            function ($name, $qty) {
+                return "$name: $qty";
+            },
+            $productNames,
+            $productQuantities,
+        );
+
+        $chart2 = LarapexChart::donutChart()
+            ->addData($productQuantities)
+            ->setLabels($productLabels)
+            ->setColors([
+                '#8B4513', // SaddleBrown (classic)
+                '#D2B48C', // Tan (light)
+                '#A0522D', // Sienna (medium)
+                '#CD853F', // Peru (warm)
+                '#F5DEB3', // Wheat (very light)
+                '#DAA520', // GoldenRod (golden brown)
+                '#B8860B', // DarkGoldenRod
+                '#BC8F8F', // RosyBrown
+                '#C19A6B', // Desert sand
+                '#987654', // Dark tan
+            ]);
+
         // menuju dashboard dengan parameter
-        return view('dashboard.index', compact(
-            'product',
-            'transaction',
-            'month',
-            'monthInd',
-            'total',
-            'chart',
-            'year',
-            'now',
-            'users',
-            ));
+        return view('dashboard.index', compact('product', 'transaction', 'month', 'monthInd', 'total', 'chart', 'chart2', 'year', 'now', 'users'));
     }
 
     // menuju ke Profil

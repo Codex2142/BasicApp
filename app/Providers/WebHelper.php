@@ -3,29 +3,15 @@
 namespace App\Providers;
 
 use Carbon\Carbon;
-\Carbon\Carbon::setLocale('id');
 use App\Models\User;
+\Carbon\Carbon::setLocale('id');
+use App\Models\Invoice;
+use App\Models\Transaction;
 use Illuminate\Support\Str;
 use Illuminate\Support\ServiceProvider;
 
 class WebHelper extends ServiceProvider
 {
-    /**
-     * Register services.
-     */
-    public function register(): void
-    {
-        //
-    }
-
-    /**
-     * Bootstrap services.
-     */
-    public function boot(): void
-    {
-        //
-    }
-
     // Mengubah Products = product
     public static function removeWord($word)
     {
@@ -63,6 +49,7 @@ class WebHelper extends ServiceProvider
         return $data;
     }
 
+    // melakukan format log
     public static function logFormatter($data)
     {
         $formatted = [];
@@ -91,5 +78,102 @@ class WebHelper extends ServiceProvider
             $formatted[] = $entry;
         }
         return $formatted;
+    }
+
+    // mengubat int ke format rupiah
+    public static function integerToRupiah($data, $withSymbol = true, $decimal = 0)
+    {
+        if (!is_numeric($data)) {
+            return $withSymbol ? 'Rp 0' : '0';
+        }
+
+        $formatted = number_format((float) $data, $decimal, ',', '.');
+        return $withSymbol ? 'Rp ' . $formatted : $formatted;
+    }
+
+    // mengubah json menjadi array
+    public static function jsonToArray($invoices)
+    {
+        $formatted = [];
+
+        foreach ($invoices as $invoice) {
+            $products = json_decode($invoice['product'], true);
+
+            foreach ($products['items'] as $product) {
+                $formatted[] = [
+                    'id' => $product['id'],
+                    'tanggal' => WebHelper::dateIndonesia($invoice['tanggal']),
+                    'product' => $product['name'],
+                    'qty' => $product['qty'],
+                    'subtotal' => $product['subtotal'],
+                    'total' => $invoice['total'],
+                    'description' => $invoice['description'],
+                    'type' => $invoice['type'],
+                    'idInvoice' => $invoice['id'],
+                ];
+            }
+        }
+        return $formatted;
+    }
+
+    public static function summaryProduct($year, $month)
+    {
+        $invoices = Invoice::whereYear('tanggal', $year)->whereMonth('tanggal', $month)->get()->toArray();
+
+        $transactions = Transaction::whereYear('tanggal', $year)->whereMonth('tanggal', $month)->get()->toArray();
+
+        $formatted = [];
+
+        // Proses invoices
+        foreach ($invoices as $inv) {
+            $productData = json_decode($inv['product'], true);
+
+            if (json_last_error() === JSON_ERROR_NONE && isset($productData['items'])) {
+                foreach ($productData['items'] as $item) {
+                    $productId = $item['id'];
+
+                    if (!isset($formatted[$productId])) {
+                        $formatted[$productId] = [
+                            'id' => $productId,
+                            'name' => $item['name'] ?? 'Unknown Product',
+                            'qty' => 0,
+                        ];
+                    }
+                    $formatted[$productId]['qty'] += $item['qty'];
+                }
+            }
+        }
+
+        // Proses transactions
+        foreach ($transactions as $tran) {
+            $productData = json_decode($tran['product'], true);
+
+            if (json_last_error() === JSON_ERROR_NONE && isset($productData['items'])) {
+                foreach ($productData['items'] as $item) {
+                    $productId = $item['id'];
+
+                    if (!isset($formatted[$productId])) {
+                        $formatted[$productId] = [
+                            'id' => $productId,
+                            'name' => $item['name'] ?? 'Unknown Product',
+                            'qty' => 0,
+                        ];
+                    }
+                    $formatted[$productId]['qty'] += $item['qty'];
+                }
+            }
+        }
+
+        // 10 terbanyak
+        usort($formatted, function ($a, $b) {
+            return $b['qty'] - $a['qty'];
+        });
+
+        return [
+            'year' => $year,
+            'month' => $month,
+            'products' => array_slice(array_values($formatted), 0, 10), // Ambil 10 teratas
+            'total_products' => count($formatted)
+        ];
     }
 }

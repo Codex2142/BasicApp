@@ -2,9 +2,10 @@
 
 namespace App\Rules;
 
-use Closure;
+use App\Models\Invoice;
 use App\Models\Product;
-use App\Models\Transaction;
+use Closure;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Contracts\Validation\ValidationRule;
 
@@ -54,61 +55,55 @@ class dataValidator implements ValidationRule
     // Validasi Stock dari json
     public static function stockValidator($input, $product, ?string $param = null)
     {
-        // ini jika transaksi > add
-        if ($param == 'add') {
-            // Decode jika input berupa JSON string
+
+        if(!$input){
+            return true;
+        }
+
+        if ($param == 'add'){
+
             $input = json_decode($input, true);
 
-            // dd($input, $product, $param);
+            foreach ($input['items'] as $item){
+                foreach ($product as $prod){
+                    if($prod['id'] == $item['id']){
+                        if ($prod['stock'] >= $item['qty']){
+                            $result = $prod['stock'] - $item['qty'];
+                            Product::where('id', $prod['id'])->update([
+                                'stock' => $result,
+                            ]);
+                        }
+                    }
+
+                }
+            }
+        } else if ($param == 'edit'){
+            $input = json_decode($input, true);
+
+            foreach ($input as $item){
+                foreach ($product as $prod){
+                    if ($prod['id'] == $item['id']){
+                        Product::where('id', $item['id'])->update([
+                            'stock' => $item['updatedStock']
+                        ]);
+                    }
+                }
+            }
+        } else {
+            $json = Invoice::where('id', $input)->value('product');
+            $input = json_decode($json, true);
 
             foreach ($input['items'] as $item){
                 foreach ($product as $prod){
                     if ($prod['id'] == $item['id']){
+                        $result = $prod['stock'] + $item['qty'];
                         Product::where('id', $item['id'])->update([
-                            'stock' => $prod['stock'] - $item['qty'],
+                            'stock' => $result
                         ]);
                     }
                 }
             }
-
-            unset($prod); // untuk mencegah referensi rusak
-            return true;
-
-        } elseif ($param == 'edit') {
-
-            // ini jika transaksi > edit
-            if (is_string($input)) {
-                $input = json_decode($input, true);
-            }
-            foreach ($input as $inp) {
-                foreach ($product as $prod) {
-                    if ($inp['id'] == $prod['id']) {
-                        $prod['stock'] = $inp['updatedStock'];
-                        product::where('id', $prod['id'])->update([
-                            'stock' => $prod['stock'],
-                        ]);
-                    }
-                }
-            }
-            unset($product);
-            return true;
         }
-
-        // ini jika transaksi > delete
-        $data = Transaction::where('id', $input)->get()->toArray();
-        $data = json_decode($data[0]['product'], true);
-
-        // dd($data['items']);
-        foreach ($data['items'] as $item){
-            foreach ($product as $prod){
-                if ($item['id'] == $prod['id']){
-                    Product::where('id', $item['id'])->update([
-                        'stock' => $prod['stock'] + $item['qty'],
-                    ]);
-                }
-            }
-        }
-        unset($product);
         return true;
     }
 }

@@ -53,6 +53,11 @@ class CrudHelper extends ServiceProvider
             $insert['password'] = Hash::make($insert['password']);
         }
 
+        // Tambahkan created_at dan updated_at
+        $currentTime = now();
+        $insert['created_at'] = $currentTime;
+        $insert['updated_at'] = $currentTime;
+
         // jika berhasil menyimpan data
         if ($validatedData === true) {
             DB::table($table)->insert($insert);
@@ -95,6 +100,9 @@ class CrudHelper extends ServiceProvider
         if (isset($insert['password'])) {
             $insert['password'] = Hash::make($insert['password']);
         }
+
+        // Update updated_at
+        $insert['updated_at'] = now();
 
         // jika berhasil update data
         if ($validatedData === true) {

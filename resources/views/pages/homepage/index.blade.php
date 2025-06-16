@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Toko Zakiah</title>
-
+    <link rel="icon" href="{{ asset('images/titleimage.png') }}" type="image/png">
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
@@ -16,7 +16,7 @@
 
         .hero-section {
             position: relative;
-            background-image: url('{{ asset('images/LockSceeen.png') }}');
+            background-image: url('{{ asset('images/container.jpg') }}');
             background-size: cover;
             background-position: center;
             height: 60vh;
@@ -74,9 +74,7 @@
     <div class="hero-section">
         <div>
             <h1>Website Informatif Toko Zakiah</h1>
-            <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Tenetur, quisquam ullam omnis, sunt sequi
-                praesentium impedit dignissimos laboriosam quidem iste quibusdam quas porro, optio tempora! Facilis quia
-                quibusdam quisquam sit?</p>
+            <p>Menyediakan kebutuhan Produk Air dalam kemasan dengan harga yang terjangkau!</p>
         </div>
     </div>
 
@@ -129,7 +127,7 @@
         <div class="row gap-2 justify-content-center">
             <div class="col-md-5 bg-body-emphasis rounded shadow p-3">
                 <h2 class="mb-3">Kontak Kami</h2>
-                <span><a href="https://wa.me/+6282336546903" class="text-decoration-none text-black"> <i class="bi bi-telephone"></i> 082336546903</a></span>
+                <span><a href="https://wa.me/+6285808344436" class="text-decoration-none text-black"> <i class="bi bi-telephone"></i> 085808344436</a></span>
             </div>
         </div>
     </div>
@@ -138,6 +136,7 @@
     <div class="container pb-5 bg-body-emphasis rounded shadow p-3">
         <h2 class="text-center mb-4">Produk Kami</h2>
 
+        <p class="small">Harga yang ditampilkan adalah Harga Retail</p>
         <div class="input-group mb-3">
             <input type="text" class="form-control" placeholder="Cari Produk" aria-label="Cari Produk"
                 aria-describedby="button-addon2">
@@ -151,7 +150,7 @@
                             alt="Product Image" class="mx-auto d-block"
                             style="width: 70px; height: 70px; border-radius: 50%; object-fit: cover;">
                         <div class="card-body p-2">
-                            <p class="mb-1">{{ $item->name }}</p>
+                            <p class="mb-1">{{ $item->name }} | {{ $item->stock }} stok</p>
                             <p class="mb-0">Rp {{ number_format($item->price1, 0, ',', '.') }}</p>
                         </div>
                     </div>
@@ -161,8 +160,8 @@
 
         <!-- Pagination -->
         <div class="d-flex justify-content-center mt-4">
-            <button id="prevPage" class="btn btn-outline-primary me-2">&laquo; Prev</button>
-            <button id="nextPage" class="btn btn-outline-primary">Next &raquo;</button>
+            <button id="prevPage" class="btn btn-outline-danger me-2">&laquo; Prev</button>
+            <button id="nextPage" class="btn btn-outline-success">Next &raquo;</button>
         </div>
     </div>
 

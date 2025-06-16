@@ -1,12 +1,12 @@
 @extends('layouts.app')
 
-@section('title', 'Kiriman - Tambah')
+@section('title', 'Pembelian - Tambah')
 
 @section('content')
     <div class="container mt-4 ">
         <div class="container mt-3">
             <div class="breadcrumbs-container text-white">
-                {!! Breadcrumbs::render('TransactionAdd') !!}
+                {!! Breadcrumbs::render('PembelianAdd') !!}
             </div>
         </div>
 
@@ -21,9 +21,9 @@
 
         <div class="col bg-white rounded-lg shadow my-4 mx-2 w-fit d-flex align-items-center gap-3">
             <div class="btn bg-green-900 text-white hover:bg-green-400 hover:text-black rounded-lg my-3 mx-3">
-                <a href="/Kiriman">Kembali</a>
+                <a href="/pembelian">Kembali</a>
             </div>
-            <span class="md:mx-40 mr-10 fw-bold"> Tambah Kiriman</span>
+            <span class="md:mx-40 mr-10 fw-bold"> Tambah Pembelian {{ ucwords($type) }}</span>
         </div>
 
         <div class="container shadow p-3 bg-white mb-3 rounded-lg">
@@ -53,20 +53,19 @@
                         </thead>
                         <tbody id="product-table-body">
                             @foreach ($result as $product)
-                                @if ($product->stock > 0)
-                                    <tr>
-                                        <td>{{ $product->name }}</td>
-                                        <td>Rp {{ number_format($product->price2, 0, ',', '.') }}</td>
-                                        <td>{{ $product->stock }}</td>
-                                        <td>
-                                            <button
-                                                class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
-                                                onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $product->price2 }}, {{ $product->stock }})">
-                                                <i class="bi bi-plus"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endif
+                                <tr>
+                                    <td>{{ $product->name }}</td>
+                                    <td>Rp
+                                        {{ number_format($type == 'retail' ? $product->price1 : $product->price2, 0, ',', '.') }}
+                                    </td>
+                                    <td>{{ $product->stock }}</td>
+                                    <td>
+                                        <button class="btn btn-sm bg-blue-900 text-white hover:bg-blue-400 hover:text-black"
+                                            onclick="addToInvoice({{ $product->id }}, '{{ $product->name }}', {{ $type == 'retail' ? $product->price1 : $product->price2 }}, {{ $product->stock }})">
+                                            <i class="bi bi-plus"></i>
+                                        </button>
+                                    </td>
+                                </tr>
                             @endforeach
                         </tbody>
                     </table>
@@ -99,7 +98,7 @@
 
         {{-- FORM PENGISIAN --}}
         <div class="container shadow p-3 bg-white mb-3 rounded-lg">
-            <form action="{{ route('transaction.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('invoice.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="row">
                     <div class="col">
@@ -120,6 +119,7 @@
 
                         {{-- JSON INPUT --}}
                         <input type="hidden" id="json" name="product" class="d-none">
+                        <input type="hidden" name="type" class="d-none" value="{{ $type }}">
                     </div>
                     <div class="col">
                         <div class="mb-3">
@@ -132,20 +132,6 @@
                                 'addon' => 'autocomplete="off"',
                             ])
                             <small id="wordCountInfo" class="text-sm text-gray-500">0 / 30 kata</small>
-                        </div>
-
-                        <div class="mb-3 d-none">
-                            @include('components.form', [
-                                'type' => 'radio',
-                                'label' => 'Status',
-                                'name' => 'status',
-                                'place' => '',
-                                'data' => [
-                                    'pending' => 'Menunggu',
-                                    'done' => 'Selesai',
-                                ],
-                                'value' => 'pending',
-                            ])
                         </div>
                     </div>
                 </div>
@@ -163,87 +149,18 @@
     <script>
         let invoice = {};
         let productStocks = {};
+        let rows = [];
         let currentPage = 1;
         const rowsPerPage = 10;
-        let filteredRows = [];
+        let paginationContainer;
 
-        document.addEventListener("DOMContentLoaded", function() {
-            const rows = document.querySelectorAll("#product-table-body tr");
-            const input = document.getElementById("searchInput");
-            const clearBtn = document.getElementById("searchDelete");
-
-            // Inisialisasi stock
-            rows.forEach(row => {
+        function initStocks() {
+            document.querySelectorAll("#product-table-body tr").forEach(row => {
                 const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
                 const stock = parseInt(row.cells[2].innerText);
                 productStocks[id] = stock;
             });
-
-            // Filter awal: hanya tampilkan yang stock > 0
-            filteredRows = Array.from(rows).filter(row => {
-                const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
-                return productStocks[id] > 0;
-            });
-
-            updateProductTable();
-            renderPagination();
-            displayRows(currentPage);
-
-            // Search produk
-            input.addEventListener("keyup", function() {
-                const keyword = input.value.toLowerCase();
-
-                filteredRows = Array.from(rows).filter(row => {
-                    const nama = row.cells[0].textContent.toLowerCase();
-                    const id = parseInt(row.querySelector("button").getAttribute("onclick").match(
-                        /\d+/)[0]);
-                    const stock = productStocks[id];
-                    return nama.includes(keyword) && stock > 0;
-                });
-
-                currentPage = 1;
-                renderPagination();
-                displayRows(currentPage);
-            });
-
-            clearBtn.addEventListener("click", function() {
-                input.value = '';
-                input.dispatchEvent(new Event('keyup'));
-            });
-
-            // Flatpickr
-            const dateDisabled = @json($dateDisabled);
-            const elemenTanggal = document.querySelector("#tanggal");
-            if (elemenTanggal) {
-                flatpickr(elemenTanggal, {
-                    locale: 'id',
-                    disable: dateDisabled,
-                    dateFormat: "Y-m-d",
-                    altInput: true,
-                    altFormat: "F j, Y",
-                    defaultDate: "today",
-                });
-            }
-
-            // Hitung karakter textarea
-            const deskripsiTextarea = document.querySelector('textarea[name="description"]');
-            const charCount = document.getElementById('wordCountInfo');
-            const maxChar = 30;
-
-            if (deskripsiTextarea && charCount) {
-                deskripsiTextarea.addEventListener('input', function() {
-                    let length = this.value.length;
-
-                    if (length > maxChar) {
-                        this.value = this.value.slice(0, maxChar);
-                        length = maxChar;
-                    }
-
-                    charCount.textContent = `${length} / ${maxChar} karakter`;
-                    charCount.classList.toggle('text-danger', length === maxChar);
-                });
-            }
-        });
+        }
 
         function addToInvoice(id, name, price, stock) {
             if (invoice[id]) {
@@ -255,26 +172,19 @@
                     return;
                 }
             } else {
-                if (productStocks[id] <= 0) {
-                    alert("Stok kosong.");
-                    return;
-                }
-
                 invoice[id] = {
                     name,
                     price,
                     qty: 1,
-                    stock: stock
+                    stock
                 };
                 productStocks[id] -= 1;
             }
-
             renderInvoice();
-            updateProductTable();
+            updateProductTable(false); // Jangan reset halaman
         }
 
         function removeFromInvoice(id) {
-            id = parseInt(id);
             if (invoice[id]) {
                 invoice[id].qty -= 1;
                 productStocks[id] += 1;
@@ -282,27 +192,21 @@
                 if (invoice[id].qty <= 0) {
                     delete invoice[id];
                 }
-
                 renderInvoice();
-                updateProductTable();
+                updateProductTable(false); // Jangan reset halaman
             }
         }
 
         function changeQty(id, qty) {
-            id = parseInt(id);
             qty = parseInt(qty);
-
-            if (!invoice[id]) return;
-
             if (qty > invoice[id].stock) {
                 alert(`Jumlah melebihi stok maksimal (${invoice[id].stock})`);
                 renderInvoice();
                 return;
             }
 
-            const diff = qty - invoice[id].qty;
-
             if (qty > 0) {
+                const diff = qty - invoice[id].qty;
                 if (diff > 0 && diff <= productStocks[id]) {
                     invoice[id].qty = qty;
                     productStocks[id] -= diff;
@@ -320,7 +224,7 @@
             }
 
             renderInvoice();
-            updateProductTable();
+            updateProductTable(false); // Jangan reset halaman
         }
 
         function renderInvoice() {
@@ -329,7 +233,7 @@
             let items = [];
 
             for (const [id, item] of Object.entries(invoice)) {
-                const subTotal = item.price * item.qty;
+                let subTotal = item.price * item.qty;
                 total += subTotal;
 
                 body += `
@@ -355,15 +259,14 @@
             document.getElementById('invoice-body').innerHTML = body;
             document.getElementById('total-bayar').innerText = total.toLocaleString('id-ID');
             document.getElementById('total-bayar-final').value = total;
-
             document.getElementById('json').value = JSON.stringify({
-                items: items,
-                total: total
+                items,
+                total
             });
         }
 
-        function updateProductTable() {
-            const allRows = document.querySelectorAll("#product-table-body tr");
+        function updateProductTable(resetPage = false) {
+            const allRows = Array.from(document.querySelectorAll("#product-table-body tr"));
 
             allRows.forEach(row => {
                 const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
@@ -371,65 +274,120 @@
                 const stock = productStocks[id];
 
                 stockCell.innerText = stock;
+
+                if (stock <= 0 && !invoice[id]) {
+                    row.style.display = 'none';
+                } else {
+                    row.style.display = '';
+                }
             });
 
-            // Perbarui filteredRows sesuai search dan stock > 0
-            const input = document.getElementById("searchInput");
-            const keyword = input.value.toLowerCase();
-
-            filteredRows = Array.from(allRows).filter(row => {
-                const nama = row.cells[0].textContent.toLowerCase();
-                const id = parseInt(row.querySelector("button").getAttribute("onclick").match(/\d+/)[0]);
-                return nama.includes(keyword) && productStocks[id] > 0;
-            });
-
-            renderPagination();
-            displayRows(currentPage);
+            rows = allRows.filter(r => r.style.display !== 'none');
+            if (resetPage) currentPage = 1;
+            updatePagination();
         }
 
-        function renderPagination() {
-            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+        function updatePagination() {
+            const visibleRows = rows.filter(r => r.style.display !== 'none');
+            const totalPages = Math.ceil(visibleRows.length / rowsPerPage);
 
-            const oldContainer = document.getElementById('pagination-container');
-            if (oldContainer) oldContainer.remove();
-
-            const newContainer = document.createElement('div');
-            newContainer.id = 'pagination-container';
-            newContainer.classList.add('mt-3');
+            paginationContainer.innerHTML = '';
 
             for (let i = 1; i <= totalPages; i++) {
                 const btn = document.createElement('button');
                 btn.className = 'btn btn-sm btn-outline-primary mx-1 mb-3';
                 btn.innerText = i;
+                btn.dataset.page = i;
 
-                if (i === currentPage) btn.classList.add('active');
+                if (i === currentPage) {
+                    btn.classList.add('active');
+                }
 
                 btn.addEventListener('click', () => {
                     currentPage = i;
-                    displayRows(currentPage);
-                    renderPagination(); // refresh agar tombol active diperbarui
+                    displayRows();
                 });
 
-                newContainer.appendChild(btn);
+                paginationContainer.appendChild(btn);
             }
 
-            document.getElementById('product-table').after(newContainer);
+            document.getElementById('product-table').after(paginationContainer);
+            displayRows();
         }
 
-        function displayRows(page) {
-            const start = (page - 1) * rowsPerPage;
+        function displayRows() {
+            const start = (currentPage - 1) * rowsPerPage;
             const end = start + rowsPerPage;
 
-            document.querySelectorAll("#product-table-body tr").forEach(row => {
-                row.style.display = 'none';
+            rows.forEach((row, index) => {
+                row.style.display = (index >= start && index < end) ? '' : 'none';
             });
 
-            filteredRows.slice(start, end).forEach(row => {
-                row.style.display = '';
+            const allButtons = paginationContainer.querySelectorAll('button');
+            allButtons.forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.dataset.page) === currentPage);
             });
         }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            initStocks();
+            paginationContainer = document.createElement('div');
+            paginationContainer.classList.add('mt-3');
+            updateProductTable(true);
+
+            const input = document.getElementById("searchInput");
+            const clearBtn = document.getElementById("searchDelete");
+
+            input.addEventListener("keyup", function() {
+                const keyword = input.value.toLowerCase();
+                const allRows = Array.from(document.querySelectorAll("#product-table-body tr"));
+
+                allRows.forEach(row => {
+                    const nama = row.cells[0].textContent.toLowerCase();
+                    row.style.display = nama.includes(keyword) ? "" : "none";
+                });
+
+                rows = allRows.filter(r => r.style.display !== 'none');
+                currentPage = 1;
+                updatePagination();
+            });
+
+            clearBtn.addEventListener("click", function() {
+                input.value = '';
+                input.dispatchEvent(new Event('keyup'));
+            });
+
+            const elemenTanggal = document.querySelector("#tanggal");
+            if (typeof flatpickr !== 'undefined' && elemenTanggal) {
+                flatpickr(elemenTanggal, {
+                    locale: 'id',
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "F j, Y",
+                    defaultDate: "today",
+                });
+            }
+
+            const deskripsiTextarea = document.querySelector('textarea[name="description"]');
+            const charCount = document.getElementById('wordCountInfo');
+            const maxChar = 30;
+
+            if (deskripsiTextarea && charCount) {
+                deskripsiTextarea.addEventListener('input', function() {
+                    let length = this.value.length;
+                    if (length > maxChar) {
+                        this.value = this.value.slice(0, maxChar);
+                        length = maxChar;
+                    }
+                    charCount.textContent = `${length} / ${maxChar} karakter`;
+                    charCount.classList.toggle('text-danger', length === maxChar);
+                });
+            }
+        });
     </script>
 @endpush
+
+
 
 @push('styles')
     <style>
@@ -439,6 +397,11 @@
             color: #d60000 !important;
             pointer-events: none !important;
             opacity: 1 !important;
+        }
+
+        .btn.active {
+            background-color: #0d6efd;
+            color: white;
         }
     </style>
 @endpush

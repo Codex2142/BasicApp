@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title')</title>
 
-    <link rel="icon" href="{{ asset('images/Skirknamecard.jpg') }}" type="image/png">
+    <link rel="icon" href="{{ asset('images/titleimage.png') }}" type="image/png">
 
     <!-- Bootstrap & Tailwind -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -33,7 +33,7 @@
                 left: 0;
                 width: 100%;
                 height: 50%;
-                background-image: url('{{ asset('images/LockSceeen.png') }}');
+                background-image: url('{{ asset('images/container.jpg') }}');
                 background-repeat: no-repeat;
                 background-position: center top;
                 background-size: cover;
